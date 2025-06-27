@@ -1,10 +1,22 @@
 {
   "name": "@ago/ui",
   "exports": {
-
+    ".": "./exports.ts",
+    "./*": "./components/*",
+    "./basic/*": "./components/basic/*",
+    "./utils": "./lib/utils.ts"
   },
   "peerDependencies": {
+    "@radix-ui/react-slot": "catalog:styles",
+    "@types/react": "catalog:types",
+    "@types/react-dom": "catalog:types",
+    "class-variance-authority": "catalog:styles",
+    "clsx": "catalog:styles",
     "react": "catalog:web",
-    "react-dom": "catalog:web"
+    "react-dom": "catalog:web",
+    "tailwind-merge": "catalog:styles"
+  },
+  "dependencies": {
+    "@ago/ui": "workspace:*"
   }
 }

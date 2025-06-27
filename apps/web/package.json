@@ -10,10 +10,19 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@ago/ui": "workspace:*",
+    "@radix-ui/react-slot": "catalog:styles",
+    "@tailwindcss/vite": "catalog:styles",
+    "class-variance-authority": "catalog:styles",
+    "clsx": "catalog:styles",
+    "lucide-react": "catalog:styles",
     "react": "catalog:web",
-    "react-dom": "catalog:web"
+    "react-dom": "catalog:web",
+    "tailwind-merge": "catalog:styles",
+    "tailwindcss": "catalog:styles"
   },
   "devDependencies": {
+    "@types/node": "catalog:types",
     "@types/react": "catalog:types",
     "@types/react-dom": "catalog:types",
     "@vitejs/plugin-react": "catalog:cli",
@@ -21,9 +30,9 @@
     "eslint-plugin-react-hooks": "catalog:cli",
     "eslint-plugin-react-refresh": "catalog:cli",
     "globals": "catalog:utils",
+    "tw-animate-css": "catalog:styles",
     "typescript": "catalog:cli",
     "typescript-eslint": "catalog:cli",
-    "unocss": "catalog:utils",
     "vite": "catalog:cli"
   }
 }
