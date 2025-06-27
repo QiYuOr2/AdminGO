@@ -1,8 +1,10 @@
 package main
 
 import (
-    "github.com/gin-gonic/gin"
-    "net/http"
+	"fmt"
+	"github.com/gin-gonic/gin"
+	"net/http"
+	"admingo/internal/config"
 )
 
 func main() {
@@ -12,5 +14,5 @@ func main() {
        context.String(http.StatusOK, "AdminGO Backend is running.")
     })
 
-    r.Run(":8080")
+    r.Run(fmt.Sprintf(":%d", config.Conf.Server.Port))
 }
