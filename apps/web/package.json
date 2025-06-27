@@ -1,0 +1,29 @@
+{
+  "name": "@ago/web",
+  "type": "module",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "catalog:web",
+    "react-dom": "catalog:web"
+  },
+  "devDependencies": {
+    "@types/react": "catalog:types",
+    "@types/react-dom": "catalog:types",
+    "@vitejs/plugin-react": "catalog:cli",
+    "eslint": "catalog:cli",
+    "eslint-plugin-react-hooks": "catalog:cli",
+    "eslint-plugin-react-refresh": "catalog:cli",
+    "globals": "catalog:utils",
+    "typescript": "catalog:cli",
+    "typescript-eslint": "catalog:cli",
+    "unocss": "catalog:utils",
+    "vite": "catalog:cli"
+  }
+}

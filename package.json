@@ -1,0 +1,19 @@
+{
+  "private": true,
+  "scripts": {
+    "dev:web": "pnpm --filter @ago/web dev"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "catalog:cli",
+    "eslint": "catalog:cli",
+    "lint-staged": "catalog:cli",
+    "simple-git-hooks": "catalog:cli"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "npx lint-staged"
+  },
+  "lint-staged": {
+    "*": "eslint --fix"
+  }
+
+}

@@ -1,0 +1,10 @@
+{
+  "name": "@ago/ui",
+  "exports": {
+
+  },
+  "peerDependencies": {
+    "react": "catalog:web",
+    "react-dom": "catalog:web"
+  }
+}
