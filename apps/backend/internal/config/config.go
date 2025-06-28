@@ -11,8 +11,13 @@ type Server struct {
 	Port int `mapstructure:"port"`
 }
 
+type I18n struct {
+	LocalsPath string `mapstructure:"localsPath"`
+}
+
 type Config struct {
 	Server Server `mapstructure:"server"`
+	I18n   I18n   `mapstructure:"i18n"`
 }
 
 func init() {

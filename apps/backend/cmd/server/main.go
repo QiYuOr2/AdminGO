@@ -1,18 +1,20 @@
 package main
 
 import (
-	"fmt"
-	"github.com/gin-gonic/gin"
-	"net/http"
+	"admingo/api"
 	"admingo/internal/config"
+	"admingo/internal/middleware"
+	"fmt"
+
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
-    r := gin.Default()
+	r := gin.Default()
 
-    r.GET("/", func(context *gin.Context) {
-       context.String(http.StatusOK, "AdminGO Backend is running.")
-    })
+	r.Use(middleware.I18n())
 
-    r.Run(fmt.Sprintf(":%d", config.Conf.Server.Port))
+	api.RegisterRoutes(r)
+
+	r.Run(fmt.Sprintf(":%d", config.Conf.Server.Port))
 }
