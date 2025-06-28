@@ -2,8 +2,9 @@ package main
 
 import (
 	"admingo/api"
-	"admingo/internal/config"
 	"admingo/internal/middleware"
+	"admingo/internal/modules"
+	"admingo/internal/modules/config"
 	"fmt"
 
 	"github.com/gin-gonic/gin"
@@ -12,9 +13,11 @@ import (
 func main() {
 	r := gin.Default()
 
+	modules.Init()
+
 	r.Use(middleware.I18n())
 
 	api.RegisterRoutes(r)
 
-	r.Run(fmt.Sprintf(":%d", config.Conf.Server.Port))
+	r.Run(fmt.Sprintf("http://localhost:%d", config.Conf.Server.Port))
 }

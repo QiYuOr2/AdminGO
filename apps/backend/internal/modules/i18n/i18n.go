@@ -1,7 +1,7 @@
 package i18n
 
 import (
-	"admingo/internal/config"
+	"admingo/internal/modules/config"
 	"fmt"
 	"path/filepath"
 

@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"admingo/internal/i18n"
+	"admingo/internal/modules/i18n"
 
 	"github.com/gin-gonic/gin"
 )
