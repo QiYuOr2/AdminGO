@@ -1,0 +1,7 @@
+{
+  "hello": "你好",
+  "welcome": "欢迎来到 AdminGO！",
+  "response.success": "成功",
+  "response.error": "错误",
+  "response.login_error": "登录失败"
+}

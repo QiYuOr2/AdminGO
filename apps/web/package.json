@@ -4,6 +4,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "predev": "node ../../scripts/convert-locales.js",
+    "prebuild": "node ../../scripts/convert-locales.js",
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
@@ -15,9 +17,12 @@
     "@tailwindcss/vite": "catalog:styles",
     "class-variance-authority": "catalog:styles",
     "clsx": "catalog:styles",
+    "i18next": "catalog:utils",
+    "i18next-http-backend": "catalog:utils",
     "lucide-react": "catalog:styles",
     "react": "catalog:web",
     "react-dom": "catalog:web",
+    "react-i18next": "catalog:utils",
     "tailwind-merge": "catalog:styles",
     "tailwindcss": "catalog:styles"
   },

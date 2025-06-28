@@ -34,7 +34,12 @@ catalogs:
     '@types/react-dom': ^19.1.6
 
   utils:
+    fs-extra: ^11.3.0
     globals: ^16.2.0
+    i18next: ^25.2.1
+    i18next-http-backend: ^3.0.2
+    react-i18next: ^15.5.3
+    yaml: ^2.8.0
 
   web:
     react: ^19.1.0

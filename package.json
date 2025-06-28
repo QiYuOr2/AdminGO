@@ -6,8 +6,10 @@
   "devDependencies": {
     "@antfu/eslint-config": "catalog:cli",
     "eslint": "catalog:cli",
+    "fs-extra": "catalog:utils",
     "lint-staged": "catalog:cli",
-    "simple-git-hooks": "catalog:cli"
+    "simple-git-hooks": "catalog:cli",
+    "yaml": "catalog:utils"
   },
   "simple-git-hooks": {
     "pre-commit": "npx lint-staged"

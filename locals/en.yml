@@ -1,0 +1,6 @@
+hello: Hello
+welcome: Welcome to AdminGO!
+
+response.success: Success
+response.error: Error
+response.login_error: Login error
