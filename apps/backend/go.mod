@@ -8,6 +8,7 @@ require (
 	github.com/spf13/viper v1.20.1
 	golang.org/x/text v0.26.0
 	gopkg.in/yaml.v3 v3.0.1
+	gorm.io/gorm v1.30.0
 )
 
 require (
@@ -22,6 +23,8 @@ require (
 	github.com/go-playground/validator/v10 v10.22.0 // indirect
 	github.com/go-viper/mapstructure/v2 v2.2.1 // indirect
 	github.com/goccy/go-json v0.10.5 // indirect
+	github.com/jinzhu/inflection v1.0.0 // indirect
+	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.8 // indirect
 	github.com/leodido/go-urn v1.4.0 // indirect
