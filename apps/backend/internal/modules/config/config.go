@@ -15,9 +15,19 @@ type I18n struct {
 	LocalsPath string `mapstructure:"localsPath"`
 }
 
+type Database struct {
+	Path string `mapstructure:"path"`
+}
+
+type JWT struct {
+	Secret string `mapstructure:"secret"`
+}
+
 type Config struct {
-	Server Server `mapstructure:"server"`
-	I18n   I18n   `mapstructure:"i18n"`
+	Server   Server   `mapstructure:"server"`
+	I18n     I18n     `mapstructure:"i18n"`
+	Database Database `mapstructure:"database"`
+	JWT      JWT      `mapstructure:"jwt"`
 }
 
 func init() {

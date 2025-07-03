@@ -2,22 +2,23 @@ package main
 
 import (
 	"admingo/api"
-	"admingo/internal/middleware"
-	"admingo/internal/modules"
 	"admingo/internal/modules/config"
+	"admingo/internal/modules/rbac"
 	"fmt"
 
-	"github.com/gin-gonic/gin"
+	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
 )
 
 func main() {
-	r := gin.Default()
+	db, err := gorm.Open(sqlite.Open(config.Conf.Database.Path), &gorm.Config{})
+	if err != nil {
+		panic("failed to connect database")
+	}
 
-	modules.Init()
+	rbac.AutoMigrate(db)
 
-	r.Use(middleware.I18n())
-
-	api.RegisterRoutes(r)
+	r := api.SetupRouter()
 
 	r.Run(fmt.Sprintf("http://localhost:%d", config.Conf.Server.Port))
 }
