@@ -1,7 +1,13 @@
 package auth
 
-import "github.com/gin-gonic/gin"
+import (
+	"admingo/internal/modules/auth"
+
+	"github.com/gin-gonic/gin"
+)
 
 func RegisterRoutes(group *gin.RouterGroup) {
-	group.POST("/login")
+	authHandler := auth.NewHandler()
+
+	group.POST("/login", authHandler.Login)
 }

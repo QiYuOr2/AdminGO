@@ -7,11 +7,11 @@ import (
 	"errors"
 )
 
-type AuthService struct {
+type Service struct {
 	rbacService *rbac.Service
 }
 
-func (s *AuthService) Login(username, password string) (string, error) {
+func (s *Service) Login(username, password string) (string, error) {
 	user, err := s.rbacService.VerifyUser(username, password)
 
 	if err != nil {

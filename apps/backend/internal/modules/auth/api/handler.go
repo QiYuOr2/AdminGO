@@ -8,15 +8,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type AuthHandler struct {
-	authService *service.AuthService
+type Handler struct {
+	authService *service.Service
 }
 
-func NewAuthHandler(authService *service.AuthService) *AuthHandler {
-	return &AuthHandler{authService: authService}
+func New(authService *service.Service) *Handler {
+	return &Handler{authService: authService}
 }
 
-func (h *AuthHandler) Login(c *gin.Context) {
+func (h *Handler) Login(c *gin.Context) {
 	var req dto.LoginDTO
 	if err := c.ShouldBindJSON(&req); err != nil {
 		response.ErrorWithMessage(c, "参数错误")
