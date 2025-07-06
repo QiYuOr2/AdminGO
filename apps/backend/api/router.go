@@ -13,7 +13,10 @@ func SetupRouter() *gin.Engine {
 	r.Use(middleware.I18n())
 	r.Use(middleware.JWT())
 
-	auth.RegisterRoutes(r.Group("/auth"))
+	api := r.Group("/api")
+	{
+		auth.RegisterRoutes(api.Group("/auth"))
+	}
 
 	return r
 }
