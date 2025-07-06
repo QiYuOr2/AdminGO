@@ -6,17 +6,19 @@ import (
 	"admingo/internal/modules/rbac"
 	"fmt"
 
-	"gorm.io/driver/sqlite"
+	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 
 func main() {
-	db, err := gorm.Open(sqlite.Open(config.Conf.Database.Path), &gorm.Config{})
+	dsn := config.GetMySQLDSN()
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
-		panic("failed to connect database")
+		panic(fmt.Sprintf("failed to connect database: %v", err))
 	}
 
 	rbac.AutoMigrate(db)
+	rbac.Init(db)
 
 	r := api.SetupRouter()
 

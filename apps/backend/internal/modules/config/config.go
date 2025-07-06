@@ -1,7 +1,9 @@
 package config
 
 import (
-	"fmt"
+	"log"
+
+	"github.com/joho/godotenv"
 	"github.com/spf13/viper"
 )
 
@@ -16,7 +18,15 @@ type I18n struct {
 }
 
 type Database struct {
-	Path string `mapstructure:"path"`
+	Driver    string `yaml:"driver"`     // mysql
+	Host      string `yaml:"host"`       // 127.0.0.1
+	Port      int    `yaml:"port"`       // 3306
+	User      string `yaml:"user"`       // root
+	Password  string `yaml:"password"`   // root123
+	Name      string `yaml:"name"`       // admingo
+	Charset   string `yaml:"charset"`    // utf8mb4
+	ParseTime bool   `yaml:"parse_time"` // true
+	Loc       string `yaml:"loc"`        // Local
 }
 
 type JWT struct {
@@ -31,16 +41,20 @@ type Config struct {
 }
 
 func init() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Println("No .env file found, skipping...")
+	}
+
 	viper.SetConfigName("config")
 	viper.SetConfigType("yaml")
 	viper.AddConfigPath("./") // 在当前目录查找
 
-	err := viper.ReadInConfig()
-	if err != nil {
-		panic(fmt.Errorf("fatal error config file: %s", err))
+	if err := viper.ReadInConfig(); err != nil {
+		log.Fatalf("Failed to read config.yaml: %v", err)
 	}
 
 	if err := viper.Unmarshal(&Conf); err != nil {
-		panic(fmt.Errorf("unmarshal config failed: %s", err))
+		log.Fatalf("Failed to unmarshal config: %v", err)
 	}
 }
