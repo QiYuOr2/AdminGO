@@ -14,7 +14,7 @@ function App() {
       <p>{t('hello')}</p>
 
       <div className="mt-4">
-        <Button onClick={() => changeLanguage('en')} className="mr-2">
+        <Button variant="outline" onClick={() => changeLanguage('en')} className="mr-2">
           English
         </Button>
         <Button onClick={() => changeLanguage('zh')}>

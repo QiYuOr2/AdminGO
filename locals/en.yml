@@ -2,5 +2,8 @@ hello: Hello
 welcome: Welcome to AdminGO!
 
 response.success: Success
-response.error: Error
-response.login_error: Login error
+response.error: Server Error
+
+error.code.10001: Server Error
+
+error.code.30001: Invalid username or password
