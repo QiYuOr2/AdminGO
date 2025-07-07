@@ -2,6 +2,7 @@ package api
 
 import (
 	"admingo/api/auth"
+	"admingo/api/sys"
 	"admingo/internal/middleware"
 	"admingo/internal/pkg/ecode"
 	"admingo/internal/pkg/response"
@@ -21,9 +22,12 @@ func SetupRouter() *gin.Engine {
 	r.GET("/", hello)
 
 	api := r.Group("/api")
-	api.Use(middleware.JWT())
 	{
 		auth.RegisterRoutes(api.Group("/auth"))
+
+		sysRoutes := api.Group("/sys")
+		sysRoutes.Use(middleware.JWT())
+		sys.RegisterRoutes(sysRoutes)
 	}
 
 	return r
