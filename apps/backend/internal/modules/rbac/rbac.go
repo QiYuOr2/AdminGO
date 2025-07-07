@@ -4,6 +4,7 @@ import (
 	"admingo/internal/modules/rbac/model"
 	"admingo/internal/modules/rbac/service"
 	"admingo/internal/pkg/utils"
+	"errors"
 	"log"
 
 	"gorm.io/gorm"
@@ -20,6 +21,14 @@ func AutoMigrate(db *gorm.DB) {
 }
 
 func Init(db *gorm.DB) error {
+	var existUser model.User
+	if err := db.Where("username = ?", "admin").First(&existUser).Error; err == nil {
+		log.Println("ℹ️  Admin 用户已存在，跳过初始化")
+		return nil
+	} else if !errors.Is(err, gorm.ErrRecordNotFound) {
+		return err
+	}
+
 	permissions := []model.Permission{
 		{Code: "sys:user:*", Path: "/api/user/*"},
 		{Code: "sys:role:*", Path: "/api/role/*"},

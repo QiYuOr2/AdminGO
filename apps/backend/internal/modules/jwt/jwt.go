@@ -30,7 +30,7 @@ func GenerateToken(userID uint, username string, permissions []string) (string, 
 func ValidateToken(tokenString string) (*CustomClaims, error) {
 	claims := &CustomClaims{}
 
-	token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
+	token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (any, error) {
 		return jwtKey, nil
 	})
 

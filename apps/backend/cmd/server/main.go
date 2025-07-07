@@ -11,7 +11,14 @@ import (
 )
 
 func main() {
+	config.InitEnv()
+
+	// TODO 模块化数据库连接，支持更换底层数据库
 	dsn := config.GetMySQLDSN()
+
+	println("=================================")
+	println(fmt.Sprintf("[MySQL Path] %s", dsn))
+
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		panic(fmt.Sprintf("failed to connect database: %v", err))
@@ -22,5 +29,5 @@ func main() {
 
 	r := api.SetupRouter()
 
-	r.Run(fmt.Sprintf("http://localhost:%d", config.Conf.Server.Port))
+	r.Run(fmt.Sprintf("%s:%d", config.Conf.Server.Host, config.Conf.Server.Port))
 }

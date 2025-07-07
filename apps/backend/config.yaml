@@ -1,15 +1,12 @@
 database:
   driver: mysql
-  host: 127.0.0.1
-  port: 3306
-  user: ${DB_USER}
-  password: ${DB_PASSWORD}
   name: admingo
   charset: utf8mb4
-  parse_time: true
+  parseTime: true
   loc: Local
 
 server:
+  host: 127.0.0.1
   port: 8080
 
 i18n:

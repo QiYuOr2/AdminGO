@@ -1,7 +1,8 @@
 {
   "private": true,
   "scripts": {
-    "dev:web": "pnpm --filter @ago/web dev"
+    "dev:web": "pnpm --filter @ago/web dev",
+    "dev:docs": "pnpm --filter @ago/docs dev"
   },
   "devDependencies": {
     "@antfu/eslint-config": "catalog:cli",

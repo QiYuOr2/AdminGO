@@ -17,11 +17,11 @@ func SetupRouter() *gin.Engine {
 	r := gin.Default()
 
 	r.Use(middleware.I18n())
-	r.Use(middleware.JWT())
 
 	r.GET("/", hello)
 
 	api := r.Group("/api")
+	api.Use(middleware.JWT())
 	{
 		auth.RegisterRoutes(api.Group("/auth"))
 	}
