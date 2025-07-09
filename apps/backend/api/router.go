@@ -8,13 +8,14 @@ import (
 	"admingo/internal/pkg/response"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 func hello(c *gin.Context) {
 	response.Result[any](c, int(ecode.OK), "hello", nil)
 }
 
-func SetupRouter() *gin.Engine {
+func SetupRouter(db *gorm.DB) *gin.Engine {
 	r := gin.Default()
 
 	r.Use(middleware.I18n())
@@ -23,11 +24,11 @@ func SetupRouter() *gin.Engine {
 
 	api := r.Group("/api")
 	{
-		auth.RegisterRoutes(api.Group("/auth"))
+		auth.RegisterRoutes(api.Group("/auth"), db)
 
 		sysRoutes := api.Group("/sys")
 		sysRoutes.Use(middleware.JWT())
-		sys.RegisterRoutes(sysRoutes)
+		sys.RegisterRoutes(sysRoutes, db)
 	}
 
 	return r

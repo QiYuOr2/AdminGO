@@ -10,6 +10,10 @@ type Service struct {
 	rbacService *rbac.Service
 }
 
+func New(rbac *rbac.Service) *Service {
+	return &Service{rbacService: rbac}
+}
+
 func (s *Service) Login(username, password string) (string, error) {
 	user, err := s.rbacService.VerifyUser(username, password)
 

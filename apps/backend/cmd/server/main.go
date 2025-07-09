@@ -27,7 +27,7 @@ func main() {
 	rbac.AutoMigrate(db)
 	rbac.Init(db)
 
-	r := api.SetupRouter()
+	r := api.SetupRouter(db)
 
 	r.Run(fmt.Sprintf("%s:%d", config.Conf.Server.Host, config.Conf.Server.Port))
 }

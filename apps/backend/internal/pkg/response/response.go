@@ -48,7 +48,6 @@ func Error(c *gin.Context, err error) {
 	if e, ok := ecode.FromError(err); ok {
 		Result[any](c, int(e.Code), e.Message, nil)
 	} else {
-		// fallback
 		Result[any](c, int(ecode.Error_ServerError), "response.error", nil)
 	}
 }
