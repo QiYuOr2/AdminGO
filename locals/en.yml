@@ -4,6 +4,9 @@ welcome: Welcome to AdminGO!
 response.success: Success
 response.error: Server Error
 
+error.code.0: Success
 error.code.10001: Server Error
-
+error.code.10002: Not Found
 error.code.30001: Invalid username or password
+error.code.30002: Permission Denied
+error.code.30003: Token Generation Failed

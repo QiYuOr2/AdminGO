@@ -19,16 +19,21 @@ func SetupRouter(db *gorm.DB) *gin.Engine {
 	r := gin.Default()
 
 	r.Use(middleware.I18n())
+	r.Use(middleware.Error())
+	r.Use(middleware.Database(db))
 
 	r.GET("/", hello)
 
 	api := r.Group("/api")
 	{
-		auth.RegisterRoutes(api.Group("/auth"), db)
+
+		auth.Route(api.Group("/auth"))
 
 		sysRoutes := api.Group("/sys")
-		sysRoutes.Use(middleware.JWT())
-		sys.RegisterRoutes(sysRoutes, db)
+		{
+			sysRoutes.Use(middleware.JWT())
+			sys.Route(sysRoutes)
+		}
 	}
 
 	return r

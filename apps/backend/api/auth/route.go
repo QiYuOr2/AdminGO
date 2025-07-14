@@ -5,13 +5,12 @@ import (
 	"admingo/internal/modules/rbac"
 
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 )
 
-func RegisterRoutes(group *gin.RouterGroup, db *gorm.DB) {
+func Route(rg *gin.RouterGroup) {
 	rbacService := rbac.NewService(db)
 	authService := auth.NewService(rbacService)
 	authHandler := auth.NewHandler(authService)
 
-	group.POST("/login", authHandler.Login)
+	rg.POST("/login", authHandler.Login)
 }
