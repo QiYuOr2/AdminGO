@@ -53,3 +53,7 @@ func (h *Handler) Register(c *gin.Context) {
 
 	response.Success(c, gin.H{"token": token})
 }
+
+// TODO 邮箱注册 / 邮箱登录
+func (h *Handler) RegisterWithEmail(c *gin.Context) {
+}

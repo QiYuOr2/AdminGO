@@ -7,6 +7,7 @@
     "./utils": "./lib/utils.ts"
   },
   "peerDependencies": {
+    "@radix-ui/react-label": "catalog:styles",
     "@radix-ui/react-slot": "catalog:styles",
     "@types/react": "catalog:types",
     "@types/react-dom": "catalog:types",

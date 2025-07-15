@@ -13,8 +13,12 @@
   },
   "dependencies": {
     "@ago/ui": "workspace:*",
+    "@radix-ui/react-label": "catalog:styles",
     "@radix-ui/react-slot": "catalog:styles",
     "@tailwindcss/vite": "catalog:styles",
+    "@tanstack/react-query": "catalog:",
+    "@tanstack/react-router": "catalog:",
+    "@tanstack/react-router-devtools": "catalog:",
     "class-variance-authority": "catalog:styles",
     "clsx": "catalog:styles",
     "i18next": "catalog:utils",
@@ -27,6 +31,8 @@
     "tailwindcss": "catalog:styles"
   },
   "devDependencies": {
+    "@iconify/react": "catalog:styles",
+    "@tanstack/router-plugin": "catalog:",
     "@types/node": "catalog:types",
     "@types/react": "catalog:types",
     "@types/react-dom": "catalog:types",

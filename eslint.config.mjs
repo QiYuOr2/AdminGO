@@ -8,6 +8,7 @@ export default antfu(
     typescript: true,
     ignores: [
       'apps/backend/',
+      'apps/web/src/routeTree.gen.ts',
     ],
   },
 )
