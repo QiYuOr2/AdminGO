@@ -1,4 +1,4 @@
-package api
+package handler
 
 import (
 	"admingo/internal/modules/auth/dto"

@@ -2,52 +2,33 @@ package service
 
 import (
 	"admingo/internal/modules/rbac/model"
+	"admingo/internal/modules/rbac/repository"
 	"strings"
-
-	"golang.org/x/crypto/bcrypt"
-	"gorm.io/gorm"
 )
 
-type Service struct {
-	db *gorm.DB
+type RBACService struct {
+	userRepo       repository.UserRepository
+	roleRepo       repository.RoleRepository
+	permissionRepo repository.PermissionRepository
 }
 
-func New(db *gorm.DB) *Service {
-	return &Service{db: db}
+func NewRBACService(userRepo repository.UserRepository, roleRepo repository.RoleRepository, permissionRepo repository.PermissionRepository) *RBACService {
+	return &RBACService{userRepo: userRepo, roleRepo: roleRepo, permissionRepo: permissionRepo}
 }
 
-func (s *Service) VerifyUser(username, password string) (*model.User, error) {
-	var user model.User
-	if err := s.db.Where("username = ?", username).First(&user).Error; err != nil {
-		return nil, err
-	}
-
-	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)); err != nil {
-		return nil, err
-	}
-
-	return &user, nil
+func (s *RBACService) VerifyUser(username, password string) (*model.User, error) {
+	return s.userRepo.VerifyUser(username, password)
 }
 
-func (s *Service) GetUserRoles(userID uint) ([]model.Role, error) {
-	var user model.User
-	err := s.db.Preload("Roles").First(&user, userID).Error
-	if err != nil {
-		return nil, err
-	}
-	return user.Roles, nil
+func (s *RBACService) GetUserRoles(userID uint) ([]model.Role, error) {
+	return s.userRepo.GetUserRoles(userID)
 }
 
-func (s *Service) GetRolePermissions(roleID uint) ([]model.Permission, error) {
-	var role model.Role
-	err := s.db.Preload("Permissions").First(&role, roleID).Error
-	if err != nil {
-		return nil, err
-	}
-	return role.Permissions, nil
+func (s *RBACService) GetRolePermissions(roleID uint) ([]model.Permission, error) {
+	return s.roleRepo.GetRolePermissions(roleID)
 }
 
-func (s *Service) GetUserPermissions(userID uint) ([]string, error) {
+func (s *RBACService) GetUserPermissions(userID uint) ([]string, error) {
 	roles, err := s.GetUserRoles(userID)
 	if err != nil {
 		return nil, err
@@ -67,7 +48,7 @@ func (s *Service) GetUserPermissions(userID uint) ([]string, error) {
 	return s.flattenPermissions(permissions), nil
 }
 
-func (s *Service) flattenPermissions(permissions []string) []string {
+func (s *RBACService) flattenPermissions(permissions []string) []string {
 	permissionSet := make(map[string]bool)
 	for _, p := range permissions {
 		permissionSet[p] = true

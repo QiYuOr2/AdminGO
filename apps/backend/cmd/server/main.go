@@ -13,7 +13,6 @@ import (
 func main() {
 	config.InitEnv()
 
-	// TODO 模块化数据库连接，支持更换底层数据库
 	dsn := config.GetMySQLDSN()
 
 	println("=================================")
@@ -27,7 +26,8 @@ func main() {
 	rbac.AutoMigrate(db)
 	rbac.Init(db)
 
-	r := api.SetupRouter(db)
+	hc := api.BuildHandlers(db)
+	r := api.SetupRouter(hc)
 
 	r.Run(fmt.Sprintf("%s:%d", config.Conf.Server.Host, config.Conf.Server.Port))
 }

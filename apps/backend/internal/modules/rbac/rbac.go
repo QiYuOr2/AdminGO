@@ -10,11 +10,7 @@ import (
 	"gorm.io/gorm"
 )
 
-type Service = service.Service
-
-func NewService(db *gorm.DB) *Service {
-	return service.New(db)
-}
+type Service = service.RBACService
 
 func AutoMigrate(db *gorm.DB) {
 	db.AutoMigrate(&model.User{}, &model.Role{}, &model.Permission{})
