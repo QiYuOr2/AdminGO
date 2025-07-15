@@ -7,16 +7,12 @@ import (
 	"gorm.io/gorm"
 )
 
-type PermissionRepository interface {
+type PermissionRepository struct {
 	crud.Repository[model.Permission]
 }
 
-type permissionRepository struct {
-	crud.Repository[model.Permission]
-}
-
-func NewPermissionRepository(db *gorm.DB) PermissionRepository {
-	return &permissionRepository{
+func NewPermissionRepository(db *gorm.DB) *PermissionRepository {
+	return &PermissionRepository{
 		Repository: crud.NewRepository[model.Permission](db),
 	}
 }

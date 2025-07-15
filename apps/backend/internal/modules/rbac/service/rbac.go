@@ -7,13 +7,17 @@ import (
 )
 
 type RBACService struct {
-	userRepo       repository.UserRepository
-	roleRepo       repository.RoleRepository
-	permissionRepo repository.PermissionRepository
+	userRepo       *repository.UserRepository
+	roleRepo       *repository.RoleRepository
+	permissionRepo *repository.PermissionRepository
 }
 
-func NewRBACService(userRepo repository.UserRepository, roleRepo repository.RoleRepository, permissionRepo repository.PermissionRepository) *RBACService {
+func NewRBACService(userRepo *repository.UserRepository, roleRepo *repository.RoleRepository, permissionRepo *repository.PermissionRepository) *RBACService {
 	return &RBACService{userRepo: userRepo, roleRepo: roleRepo, permissionRepo: permissionRepo}
+}
+
+func (s *RBACService) CreateUser(username, password string) (*model.User, error) {
+	return s.userRepo.CreateUser(username, password)
 }
 
 func (s *RBACService) VerifyUser(username, password string) (*model.User, error) {

@@ -31,3 +31,25 @@ func (h *Handler) Login(c *gin.Context) {
 
 	response.Success(c, gin.H{"token": token})
 }
+
+func (h *Handler) Register(c *gin.Context) {
+	var req dto.LoginDTO
+	if err := c.ShouldBindJSON(&req); err != nil {
+		response.ErrorWithMessage(c, "参数错误")
+		return
+	}
+
+	err := h.authService.Register(req.Username, req.Password)
+	if err != nil {
+		response.ErrorWithMessage(c, err.Error())
+		return
+	}
+
+	token, err := h.authService.Login(req.Username, req.Password)
+	if err != nil {
+		response.ErrorWithMessage(c, err.Error())
+		return
+	}
+
+	response.Success(c, gin.H{"token": token})
+}

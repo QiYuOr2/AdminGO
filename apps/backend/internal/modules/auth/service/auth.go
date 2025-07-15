@@ -33,3 +33,8 @@ func (s *Service) Login(username, password string) (string, error) {
 
 	return token, nil
 }
+
+func (s *Service) Register(username, password string) error {
+	_, err := s.rbacService.CreateUser(username, password)
+	return err
+}
