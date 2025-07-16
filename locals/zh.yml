@@ -1,6 +1,18 @@
 hello: 你好
 welcome: 欢迎来到 AdminGO！
 
+# UI START
+Login to your account: 登录你的账号
+Email: 邮箱
+Account: 账号
+Password: 密码
+Input your account: 输入你的账号
+Forgot your password?: 忘记密码？
+Login: 登录
+Don't have an account?: 还没有账号？
+Sign up: 点击注册
+# UI END
+
 response.success: 成功
 response.error: 服务端错误
 
