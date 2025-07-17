@@ -28,6 +28,7 @@ func SetupRouter(hc *HandlerCenter) *gin.Engine {
 		sys.UserRouter(api.Group("/sys/user"), hc.User)
 		sys.RoleRouter(api.Group("/sys/role"), hc.Role)
 		sys.PermissionRouter(api.Group("/sys/permission"), hc.Permission)
+		sys.MenuRouter(api.Group("/sys/menu"), hc.Menu)
 	}
 
 	return r

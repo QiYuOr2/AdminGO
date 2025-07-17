@@ -3,8 +3,10 @@ package api
 import (
 	"admingo/api/sys"
 	"admingo/internal/modules/auth"
-	rbacRepo "admingo/internal/modules/rbac/repository"
-	rbacService "admingo/internal/modules/rbac/service"
+	"admingo/internal/modules/menu"
+
+	RBACRepo "admingo/internal/modules/rbac/repository"
+	RBACService "admingo/internal/modules/rbac/service"
 	"admingo/internal/pkg/response"
 	"admingo/pkg/crud"
 
@@ -16,16 +18,17 @@ type HandlerCenter struct {
 	User       *sys.UserHandler
 	Role       *sys.RoleHandler
 	Permission *sys.PermissionHandler
+	Menu       *menu.Handler
 }
 
 func BuildHandlers(db *gorm.DB) *HandlerCenter {
 	responder := response.NewAGOResponder()
 
-	userRepo := rbacRepo.NewUserRepository(db)
-	roleRepo := rbacRepo.NewRoleRepository(db)
-	permissionRepo := rbacRepo.NewPermissionRepository(db)
+	userRepo := RBACRepo.NewUserRepository(db)
+	roleRepo := RBACRepo.NewRoleRepository(db)
+	permissionRepo := RBACRepo.NewPermissionRepository(db)
 
-	rbacService := rbacService.NewRBACService(userRepo, roleRepo, permissionRepo)
+	rbacService := RBACService.NewRBACService(userRepo, roleRepo, permissionRepo)
 	authService := auth.NewService(rbacService)
 	authHandler := auth.NewHandler(authService)
 
@@ -38,10 +41,15 @@ func BuildHandlers(db *gorm.DB) *HandlerCenter {
 	permissionService := crud.NewService(permissionRepo)
 	permissionHandler := crud.NewHandler(permissionService, responder)
 
+	menuRepo := menu.NewMenuRepository(db)
+	menuService := menu.NewMenuService(menuRepo)
+	menuHandler := menu.NewMenuHandler(menuService, responder)
+
 	return &HandlerCenter{
 		Auth:       authHandler,
 		User:       userHandler,
 		Role:       roleHandler,
 		Permission: permissionHandler,
+		Menu:       menuHandler,
 	}
 }
