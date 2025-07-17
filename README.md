@@ -2,52 +2,54 @@
 
 ```mermaid
 graph TD
-    subgraph " "
-        direction TB
+    subgraph CoreApplication ["核心应用层"]
+        direction LR
 
-        %% Layer 1: Presentation
-        subgraph Presentation ["表示层 (Presentation Layer)"]
-            subgraph PresentationEntry ["入口与路由 (Entry & Routing)"]
-                Router["Gin Router & Main Entrypoint"]
-                Middlewares["通用中间件 (JWT, RBAC, etc.)"]
-            end
-
-            subgraph PresentationHandlers ["API 处理器 (API Handlers)"]
-                CustomHandlers["定制业务处理器"]
-                GenericCrudHandlers["通用CRUD处理器 (复用pkg/crud)"]
-            end
-        end
-
-        %% Layer 2: Business Logic
-        subgraph Business ["业务逻辑层 (Business Logic Layer)"]
-            CoreServices["核心业务服务"]
-            GenericCrudService["通用CRUD服务 (from pkg/crud)"]
-        end
-
-        %% Layer 3: Data Access
-        subgraph Data ["数据访问层 (Data Access Layer)"]
-            subgraph DataRepos ["数据仓库 (Repositories)"]
-                CustomRepos["定制业务仓库"]
-                GenericCrudRepo["通用CRUD仓库 (from pkg/crud)"]
-            end
-            Gorm["GORM (ORM)"]
-        end
-
-        %% Layer 4: Shared Modules
-        subgraph Shared ["共享基础模块 (Shared Foundation Modules)"]
+        subgraph Framework ["通用框架层"]
+            direction LR
             PkgCrud["通用CRUD框架 (pkg/crud)"]
-            Config["配置管理 (Viper)"]
-            JWT["认证 (JWT)"]
-            I18n["国际化 (i18n)"]
-            CommonPkgs["公共包 (Response, Ecode, Utils)"]
         end
+
+        subgraph BusinessLayers [" "]
+            direction BT
+
+            subgraph Presentation ["表示层"]
+                subgraph PresentationEntry ["入口与路由"]
+                    Router["Gin Router"]
+                    Middlewares["通用中间件"]
+                end
+                subgraph PresentationHandlers ["API 处理器"]
+                    CustomHandlers["定制业务处理器"]
+                end
+            end
+
+            subgraph Business ["业务逻辑层"]
+                CoreServices["核心业务服务"]
+            end
+
+            subgraph Data ["数据访问层"]
+                    direction LR
+                CustomRepos["定制业务仓库"]
+                Gorm["GORM (ORM)"]
+            end
+        end
+
+    end
+
+    subgraph SharedModules ["共享基础模块"]
+        direction LR
+        Config["配置管理 (Viper)"]
+        JWT["认证 (JWT)"]
+        I18n["国际化 (i18n)"]
+        CommonPkgs["公共包 (Response, Ecode, Utils)"]
     end
 
     %% Styling Definitions
-    style Presentation fill:#e6f7ff,stroke:#85c5e3,stroke-width:2px,stroke-dasharray: 5 5
-    style Business     fill:#e6ffe6,stroke:#73d173,stroke-width:2px,stroke-dasharray: 5 5
+    style Framework    fill:#e0e0e0,stroke:#666666,stroke-width:2px,stroke-dasharray: 5 5
     style Data         fill:#fff0e6,stroke:#ffad66,stroke-width:2px,stroke-dasharray: 5 5
-    style Shared       fill:#f2f2f2,stroke:#b3b3b3,stroke-width:2px,stroke-dasharray: 5 5
+    style Business     fill:#e6ffe6,stroke:#73d173,stroke-width:2px,stroke-dasharray: 5 5
+    style Presentation fill:#e6f7ff,stroke:#85c5e3,stroke-width:2px,stroke-dasharray: 5 5
+    style SharedModules fill:#f2f2f2,stroke:#b3b3b3,stroke-width:2px,stroke-dasharray: 5 5
 ```
 
 ## 技术选型
