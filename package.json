@@ -2,7 +2,9 @@
   "private": true,
   "scripts": {
     "dev:web": "pnpm --filter @ago/web dev",
-    "dev:docs": "pnpm --filter @ago/docs dev"
+    "dev:docs": "pnpm --filter @ago/docs dev",
+    "new:module": "zx ./scripts/create-module.mjs",
+    "lint": "eslint ."
   },
   "devDependencies": {
     "@antfu/eslint-config": "catalog:cli",
@@ -10,7 +12,8 @@
     "fs-extra": "catalog:utils",
     "lint-staged": "catalog:cli",
     "simple-git-hooks": "catalog:cli",
-    "yaml": "catalog:utils"
+    "yaml": "catalog:utils",
+    "zx": "catalog:cli"
   },
   "simple-git-hooks": {
     "pre-commit": "npx lint-staged"
@@ -18,5 +21,4 @@
   "lint-staged": {
     "*": "eslint --fix"
   }
-
 }

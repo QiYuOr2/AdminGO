@@ -22,6 +22,8 @@ catalogs:
     typescript: ~5.8.3
     typescript-eslint: ^8.34.1
     vite: ^7.0.0
+    zx: ^8.7.1
+
   styles:
     '@iconify/react': ^6.0.0
     '@radix-ui/react-avatar': ^1.1.10
