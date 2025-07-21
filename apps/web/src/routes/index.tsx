@@ -1,4 +1,3 @@
-import { AppSidebar } from '@ago/ui/app-sidebar.tsx'
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -14,6 +13,7 @@ import {
   SidebarTrigger,
 } from '@ago/ui/basic/sidebar.tsx'
 import { createFileRoute, redirect } from '@tanstack/react-router'
+import { AppSidebar } from '~/components/app-sidebar.tsx'
 
 export const Route = createFileRoute('/')({
   beforeLoad: async ({ context }) => {

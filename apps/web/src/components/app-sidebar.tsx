@@ -1,4 +1,17 @@
 import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+} from '@ago/ui'
+import { NavMain } from '@ago/ui/nav-main.tsx'
+import { NavProjects } from '@ago/ui/nav-projects.tsx'
+import { NavSecondary } from '@ago/ui/nav-secondary.tsx'
+import { NavUser } from '@ago/ui/nav-user.tsx'
+import {
   BookOpen,
   Bot,
   Command,
@@ -11,19 +24,6 @@ import {
   SquareTerminal,
 } from 'lucide-react'
 import * as React from 'react'
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-} from './basic/sidebar'
-import { NavMain } from './nav-main'
-import { NavProjects } from './nav-projects'
-import { NavSecondary } from './nav-secondary'
-import { NavUser } from './nav-user'
 
 const data = {
   user: {
