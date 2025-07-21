@@ -12,5 +12,6 @@ type PermissionHandler = crud.Handler[model.Permission]
 
 func PermissionRouter(rg *gin.RouterGroup, handler *PermissionHandler) {
 	rg.Use(middleware.JWT())
+
 	rg.GET("/:id", handler.GetByID)
 }

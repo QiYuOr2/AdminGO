@@ -5,7 +5,7 @@ graph TD
     subgraph CoreApplication ["核心应用层"]
         direction LR
 
-        subgraph Framework ["通用框架层"]
+        subgraph Framework ["通用框架模块"]
             direction LR
             PkgCrud["通用CRUD框架 (pkg/crud)"]
         end

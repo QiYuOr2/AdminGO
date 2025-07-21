@@ -1,0 +1,78 @@
+basePath: /api
+definitions:
+  admingo_internal_modules_auth_dto.LoginDTO:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  admingo_internal_modules_auth_dto.LoginResponseDTO:
+    properties:
+      token:
+        type: string
+    type: object
+  admingo_internal_pkg_response.Response-admingo_internal_modules_auth_dto_LoginResponseDTO:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/admingo_internal_modules_auth_dto.LoginResponseDTO'
+      message:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: This is the backend service for AdminGO.
+  title: AdminGO API
+  version: "1.0"
+paths:
+  /api/login:
+    post:
+      consumes:
+      - application/json
+      description: 验证用户，返回 JWT Token
+      parameters:
+      - description: Login credentials
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/admingo_internal_modules_auth_dto.LoginDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/admingo_internal_pkg_response.Response-admingo_internal_modules_auth_dto_LoginResponseDTO'
+      summary: 登录
+      tags:
+      - auth
+  /api/register:
+    post:
+      consumes:
+      - application/json
+      description: 注册新用户并自动的登录
+      parameters:
+      - description: User registration data
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/admingo_internal_modules_auth_dto.LoginDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/admingo_internal_pkg_response.Response-admingo_internal_modules_auth_dto_LoginResponseDTO'
+      summary: 注册
+      tags:
+      - auth
+swagger: "2.0"

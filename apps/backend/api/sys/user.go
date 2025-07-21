@@ -12,6 +12,7 @@ type UserHandler = crud.Handler[model.User]
 
 func UserRouter(rg *gin.RouterGroup, handler *UserHandler) {
 	rg.Use(middleware.JWT())
+
 	rg.GET("/:id", handler.GetByID)
 	rg.GET("/", handler.List)
 }

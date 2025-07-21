@@ -12,5 +12,6 @@ type RoleHandler = crud.Handler[model.Role]
 
 func RoleRouter(rg *gin.RouterGroup, handler *RoleHandler) {
 	rg.Use(middleware.JWT())
+
 	rg.GET("/:id", handler.GetByID)
 }
