@@ -31,13 +31,13 @@ func (h *Handler) Login(c *gin.Context) {
 		return
 	}
 
-	token, err := h.authService.Login(req.Username, req.Password)
+	result, err := h.authService.Login(req.Username, req.Password)
 	if err != nil {
 		response.ErrorWithMessage(c, err.Error())
 		return
 	}
 
-	response.Success(c, &dto.LoginResponseDTO{Token: token})
+	response.Success(c, result)
 }
 
 // @Summary		注册
@@ -61,13 +61,13 @@ func (h *Handler) Register(c *gin.Context) {
 		return
 	}
 
-	token, err := h.authService.Login(req.Username, req.Password)
+	result, err := h.authService.Login(req.Username, req.Password)
 	if err != nil {
 		response.ErrorWithMessage(c, err.Error())
 		return
 	}
 
-	response.Success(c, &dto.LoginResponseDTO{Token: token})
+	response.Success(c, result)
 }
 
 // TODO 邮箱注册 / 邮箱登录

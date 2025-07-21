@@ -13,9 +13,14 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from '@ago/ui/basic/sidebar.tsx'
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, redirect } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/')({
+  beforeLoad: async ({ context }) => {
+    if (!context.auth.userId) {
+      throw redirect({ to: '/login' })
+    }
+  },
   component: RouteComponent,
 })
 

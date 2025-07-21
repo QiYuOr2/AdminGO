@@ -6,5 +6,7 @@ type LoginDTO struct {
 }
 
 type LoginResponseDTO struct {
-	Token string `json:"token"`
+	Username string `json:"username"`
+	UserId   uint   `json:"userId"`
+	Token    string `json:"token"`
 }

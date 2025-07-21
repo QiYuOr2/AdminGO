@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@ago/ui": "workspace:*",
+    "@hookform/resolvers": "catalog:",
     "@radix-ui/react-avatar": "catalog:styles",
     "@radix-ui/react-collapsible": "catalog:styles",
     "@radix-ui/react-dialog": "catalog:styles",
@@ -32,9 +33,11 @@
     "lucide-react": "catalog:styles",
     "react": "catalog:web",
     "react-dom": "catalog:web",
+    "react-hook-form": "catalog:utils",
     "react-i18next": "catalog:utils",
     "tailwind-merge": "catalog:styles",
-    "tailwindcss": "catalog:styles"
+    "tailwindcss": "catalog:styles",
+    "zod": "catalog:utils"
   },
   "devDependencies": {
     "@iconify/react": "catalog:styles",

@@ -1,6 +1,7 @@
 package service
 
 import (
+	"admingo/internal/modules/auth/dto"
 	"admingo/internal/modules/jwt"
 	"admingo/internal/modules/rbac"
 	"admingo/internal/pkg/ecode"
@@ -14,24 +15,24 @@ func New(rbac *rbac.Service) *Service {
 	return &Service{rbacService: rbac}
 }
 
-func (s *Service) Login(username, password string) (string, error) {
+func (s *Service) Login(username, password string) (*dto.LoginResponseDTO, error) {
 	user, err := s.rbacService.VerifyUser(username, password)
 
 	if err != nil {
-		return "", ecode.New(ecode.Error_InvalidCredentials, "用户名或密码错误")
+		return nil, ecode.New(ecode.Error_InvalidCredentials, "用户名或密码错误")
 	}
 
 	perms, err := s.rbacService.GetUserPermissions(user.ID)
 	if err != nil {
-		return "", ecode.New(ecode.Error_PermissionDenied, "获取用户权限失败")
+		return nil, ecode.New(ecode.Error_PermissionDenied, "获取用户权限失败")
 	}
 
 	token, err := jwt.GenerateToken(user.ID, user.Username, perms)
 	if err != nil {
-		return "", ecode.New(ecode.Error_TokenGenerateFail, "生成 Token 失败")
+		return nil, ecode.New(ecode.Error_TokenGenerateFail, "生成 Token 失败")
 	}
 
-	return token, nil
+	return &dto.LoginResponseDTO{UserId: user.ID, Username: user.Username, Token: token}, nil
 }
 
 func (s *Service) Register(username, password string) error {
