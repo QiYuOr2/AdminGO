@@ -2,7 +2,9 @@ package main
 
 import (
 	"admingo/api"
+	"admingo/internal/modules/auth"
 	"admingo/internal/modules/config"
+	"admingo/internal/modules/menu"
 	"admingo/internal/modules/rbac"
 	"fmt"
 
@@ -37,6 +39,9 @@ func main() {
 
 	rbac.AutoMigrate(db)
 	rbac.Init(db)
+	auth.AutoMigrate(db)
+	menu.AutoMigrate(db)
+	menu.Init(db)
 
 	hc := api.BuildHandlers(db)
 	r := api.SetupRouter(hc)

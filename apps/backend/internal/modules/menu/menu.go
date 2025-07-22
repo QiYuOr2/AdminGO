@@ -2,6 +2,7 @@ package menu
 
 import (
 	"admingo/internal/modules/menu/handler"
+	"admingo/internal/modules/menu/model"
 	"admingo/internal/modules/menu/repository"
 	"admingo/internal/modules/menu/service"
 	"admingo/pkg/crud"
@@ -23,4 +24,12 @@ func NewMenuService(repo *Repository) *Service {
 
 func NewMenuHandler(service *Service, responder crud.Responder) *Handler {
 	return handler.New(service, responder)
+}
+
+func AutoMigrate(db *gorm.DB) {
+	db.AutoMigrate(&model.Menu{})
+}
+
+func Init(db *gorm.DB) error {
+
 }
