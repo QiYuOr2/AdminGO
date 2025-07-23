@@ -12,6 +12,14 @@ type RBACService struct {
 	permissionRepo *repository.PermissionRepository
 }
 
+type RBACServiceInterface interface {
+	CreateUser(username, password string) (*model.User, error)
+	VerifyUser(username, password string) (*model.User, error)
+	GetUserRoles(userID uint) ([]model.Role, error)
+	GetRolePermissions(roleID uint) ([]model.Permission, error)
+	GetUserPermissions(userID uint) ([]string, error)
+}
+
 func NewRBACService(userRepo *repository.UserRepository, roleRepo *repository.RoleRepository, permissionRepo *repository.PermissionRepository) *RBACService {
 	return &RBACService{userRepo: userRepo, roleRepo: roleRepo, permissionRepo: permissionRepo}
 }

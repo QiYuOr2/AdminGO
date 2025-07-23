@@ -10,10 +10,14 @@ import (
 
 type Handler struct {
 	authService *service.Service
+	responder   *response.Responder
 }
 
-func New(authService *service.Service) *Handler {
-	return &Handler{authService: authService}
+func New(authService *service.Service, responder *response.Responder) *Handler {
+	return &Handler{
+		authService: authService,
+		responder:   responder,
+	}
 }
 
 // @Summary		登录
@@ -27,17 +31,17 @@ func New(authService *service.Service) *Handler {
 func (h *Handler) Login(c *gin.Context) {
 	var req dto.LoginDTO
 	if err := c.ShouldBindJSON(&req); err != nil {
-		response.ErrorWithMessage(c, "参数错误")
+		h.responder.ErrorWithMessage(c, "参数错误")
 		return
 	}
 
 	result, err := h.authService.Login(req.Username, req.Password)
 	if err != nil {
-		response.ErrorWithMessage(c, err.Error())
+		h.responder.ErrorWithMessage(c, err.Error())
 		return
 	}
 
-	response.Success(c, result)
+	h.responder.Success(c, result)
 }
 
 // @Summary		注册
@@ -51,23 +55,23 @@ func (h *Handler) Login(c *gin.Context) {
 func (h *Handler) Register(c *gin.Context) {
 	var req dto.LoginDTO
 	if err := c.ShouldBindJSON(&req); err != nil {
-		response.ErrorWithMessage(c, "参数错误")
+		h.responder.ErrorWithMessage(c, "参数错误")
 		return
 	}
 
 	err := h.authService.Register(req.Username, req.Password)
 	if err != nil {
-		response.ErrorWithMessage(c, err.Error())
+		h.responder.ErrorWithMessage(c, err.Error())
 		return
 	}
 
 	result, err := h.authService.Login(req.Username, req.Password)
 	if err != nil {
-		response.ErrorWithMessage(c, err.Error())
+		h.responder.ErrorWithMessage(c, err.Error())
 		return
 	}
 
-	response.Success(c, result)
+	h.responder.Success(c, result)
 }
 
 // TODO 邮箱注册 / 邮箱登录

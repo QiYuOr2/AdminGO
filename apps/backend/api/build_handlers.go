@@ -30,7 +30,7 @@ func BuildHandlers(db *gorm.DB) *HandlerCenter {
 
 	rbacService := RBACService.NewRBACService(userRepo, roleRepo, permissionRepo)
 	authService := auth.NewService(rbacService)
-	authHandler := auth.NewHandler(authService)
+	authHandler := auth.NewHandler(authService, responder)
 
 	userService := crud.NewService(userRepo)
 	userHandler := crud.NewHandler(userService, responder)
@@ -42,7 +42,7 @@ func BuildHandlers(db *gorm.DB) *HandlerCenter {
 	permissionHandler := crud.NewHandler(permissionService, responder)
 
 	menuRepo := menu.NewMenuRepository(db)
-	menuService := menu.NewMenuService(menuRepo)
+	menuService := menu.NewMenuService(menuRepo, rbacService)
 	menuHandler := menu.NewMenuHandler(menuService, responder)
 
 	return &HandlerCenter{

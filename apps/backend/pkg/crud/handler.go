@@ -25,73 +25,73 @@ func NewHandler[T any](service *Service[T], responder Responder) *Handler[T] {
 func (h *Handler[T]) Create(c *gin.Context) {
 	var entity T
 	if err := c.ShouldBindJSON(&entity); err != nil {
-		h.Responder.Error(c, http.StatusBadRequest, "Invalid request body")
+		h.Responder.CRUDError(c, http.StatusBadRequest, "Invalid request body")
 		return
 	}
 
 	if err := h.Service.Create(&entity); err != nil {
-		h.Responder.Error(c, http.StatusInternalServerError, "Failed to create entity")
+		h.Responder.CRUDError(c, http.StatusInternalServerError, "Failed to create entity")
 		return
 	}
 
-	h.Responder.Success(c, http.StatusCreated, entity)
+	h.Responder.CRUDSuccess(c, http.StatusCreated, entity)
 }
 
 func (h *Handler[T]) GetByID(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {
-		h.Responder.Error(c, http.StatusBadRequest, "Invalid ID")
+		h.Responder.CRUDError(c, http.StatusBadRequest, "Invalid ID")
 		return
 	}
 
 	entity, err := h.Service.GetByID(uint(id))
 	if err != nil {
-		h.Responder.NotFound(c, "Entity not found")
+		h.Responder.CRUDNotFound(c, "Entity not found")
 		return
 	}
 
-	h.Responder.Success(c, http.StatusOK, entity)
+	h.Responder.CRUDSuccess(c, http.StatusOK, entity)
 }
 
 func (h *Handler[T]) Update(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {
-		h.Responder.Error(c, http.StatusBadRequest, "Invalid ID")
+		h.Responder.CRUDError(c, http.StatusBadRequest, "Invalid ID")
 		return
 	}
 
 	if _, err := h.Service.GetByID(uint(id)); err != nil {
-		h.Responder.NotFound(c, "Entity not found")
+		h.Responder.CRUDNotFound(c, "Entity not found")
 		return
 	}
 
 	var entity T
 	if err := c.ShouldBindJSON(&entity); err != nil {
-		h.Responder.Error(c, http.StatusBadRequest, "Invalid request body")
+		h.Responder.CRUDError(c, http.StatusBadRequest, "Invalid request body")
 		return
 	}
 
 	if err := h.Service.Update(&entity); err != nil {
-		h.Responder.Error(c, http.StatusInternalServerError, "Failed to update entity")
+		h.Responder.CRUDError(c, http.StatusInternalServerError, "Failed to update entity")
 		return
 	}
 
-	h.Responder.Success(c, http.StatusOK, entity)
+	h.Responder.CRUDSuccess(c, http.StatusOK, entity)
 }
 
 func (h *Handler[T]) Delete(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {
-		h.Responder.Error(c, http.StatusBadRequest, "Invalid ID")
+		h.Responder.CRUDError(c, http.StatusBadRequest, "Invalid ID")
 		return
 	}
 
 	if err := h.Service.Delete(uint(id)); err != nil {
-		h.Responder.Error(c, http.StatusInternalServerError, "Failed to delete entity")
+		h.Responder.CRUDError(c, http.StatusInternalServerError, "Failed to delete entity")
 		return
 	}
 
-	h.Responder.Success(c, http.StatusOK, gin.H{"message": "Entity deleted successfully"})
+	h.Responder.CRUDSuccess(c, http.StatusOK, gin.H{"message": "Entity deleted successfully"})
 }
 
 func (h *Handler[T]) List(c *gin.Context) {
@@ -100,13 +100,13 @@ func (h *Handler[T]) List(c *gin.Context) {
 
 	page, err := strconv.Atoi(pageStr)
 	if err != nil || page < 1 {
-		h.Responder.Error(c, http.StatusBadRequest, "Invalid page parameter")
+		h.Responder.CRUDError(c, http.StatusBadRequest, "Invalid page parameter")
 		return
 	}
 
 	pageSize, err := strconv.Atoi(pageSizeStr)
 	if err != nil || pageSize < 1 {
-		h.Responder.Error(c, http.StatusBadRequest, "Invalid pageSize parameter")
+		h.Responder.CRUDError(c, http.StatusBadRequest, "Invalid pageSize parameter")
 		return
 	}
 
@@ -115,9 +115,9 @@ func (h *Handler[T]) List(c *gin.Context) {
 
 	entities, err := h.Service.List(offset, limit)
 	if err != nil {
-		h.Responder.Error(c, http.StatusInternalServerError, "Failed to list entities")
+		h.Responder.CRUDError(c, http.StatusInternalServerError, "Failed to list entities")
 		return
 	}
 
-	h.Responder.Success(c, http.StatusOK, entities)
+	h.Responder.CRUDSuccess(c, http.StatusOK, entities)
 }
