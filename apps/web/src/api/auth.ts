@@ -21,9 +21,6 @@ export async function login(credentials: LoginDTO) {
   const response = await apiClient<LoginResponseDTO>('/login', {
     method: 'POST',
     data: credentials,
-    headers: {
-      'Content-Type': 'application/json',
-    },
   })
 
   localStorage.setItem(AUTH_TOKEN_KEY, response.data.token)
@@ -39,9 +36,6 @@ export async function register(payload: LoginDTO) {
   const response = await apiClient<LoginResponseDTO>('/register', {
     method: 'POST',
     data: payload,
-    headers: {
-      'Content-Type': 'application/json',
-    },
   })
 
   localStorage.setItem(AUTH_TOKEN_KEY, response.data.token)

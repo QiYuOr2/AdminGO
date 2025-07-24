@@ -10,6 +10,6 @@ import (
 func MenuRouter(rg *gin.RouterGroup, handler *menu.Handler) {
 	rg.Use(middleware.JWT())
 
-	rg.GET("/", handler.List)
-	rg.GET("/findByUser", handler.FindByUserID)
+	// rg.GET("/", handler.List)
+	rg.GET("/list", handler.FindByUserID)
 }
