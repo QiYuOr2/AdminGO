@@ -2,7 +2,7 @@ import type { NavMainItem } from '@ago/ui/nav-main.tsx'
 import type { MenuDTO } from '~/api/menu'
 import { Command } from 'lucide-react'
 
-export function buildSidebarMenu(menus: MenuDTO[]): NavMainItem[] {
+export function buildSidebarMenu(basic: string, menus: MenuDTO[]): NavMainItem[] {
   const rootMenus = menus.filter(m => m.parentId === null)
   const childrenMap = new Map<number, MenuDTO[]>()
 
@@ -17,12 +17,12 @@ export function buildSidebarMenu(menus: MenuDTO[]): NavMainItem[] {
 
   return rootMenus.map(root => ({
     title: root.title,
-    url: root.path,
+    url: `${basic}${root.path}`,
     icon: Command,
     isActive: false,
     items: childrenMap.get(root.id)?.map(child => ({
       title: child.title,
-      url: child.path,
+      url: `${basic}${child.path}`,
     })),
   }))
 }

@@ -27,7 +27,7 @@ const data = {
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { menus } = useAppContext()
 
-  const navItems = menus ? buildSidebarMenu(menus) : []
+  const navItems = menus ? buildSidebarMenu('/dashboard', menus) : []
 
   return (
     <Sidebar variant="inset" {...props}>

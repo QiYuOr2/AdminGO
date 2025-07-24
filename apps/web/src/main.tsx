@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { createRouter, RouterProvider } from '@tanstack/react-router'
+import { createRouter, Navigate, RouterProvider } from '@tanstack/react-router'
 import { useEffect } from 'react'
 import ReactDOM from 'react-dom/client'
 import { auth } from './common/auth'
@@ -15,6 +15,7 @@ const router = createRouter({
   context: {
     auth: undefined!,
   },
+  defaultNotFoundComponent: () => <Navigate to="/404" />,
 })
 
 function App() {
