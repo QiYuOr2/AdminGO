@@ -3,6 +3,7 @@ import { createRouter, RouterProvider } from '@tanstack/react-router'
 import { useEffect } from 'react'
 import ReactDOM from 'react-dom/client'
 import { auth } from './common/auth'
+import { AppProvider } from './contexts/AppContext'
 import { routeTree } from './routeTree.gen'
 import './index.css'
 import './i18n'
@@ -23,7 +24,9 @@ function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} context={{ auth }} />
+      <AppProvider>
+        <RouterProvider router={router} context={{ auth }} />
+      </AppProvider>
     </QueryClientProvider>
   )
 }

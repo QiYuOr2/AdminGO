@@ -1,4 +1,5 @@
 import type { LoginResponseDTO } from '~/api/auth'
+import { useQueryClient } from '@tanstack/react-query'
 import { createFileRoute, redirect, useRouter } from '@tanstack/react-router'
 import { LoginForm } from '../components/login-form'
 
@@ -13,12 +14,14 @@ export const Route = createFileRoute('/login')({
 
 export default function LoginPage() {
   const router = useRouter()
+  const qc = useQueryClient()
   const { auth } = Route.useRouteContext({
     select: ({ auth }) => ({ auth }),
   })
   const onLoginSuccess = (data: LoginResponseDTO) => {
     auth.login(data.username, data.userId)
     router.invalidate()
+    qc.invalidateQueries({ queryKey: ['menus'] })
   }
 
   return (

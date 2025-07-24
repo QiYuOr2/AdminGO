@@ -1,3 +1,5 @@
+import { AUTH_TOKEN_KEY, AUTH_USER_ID_KEY, AUTH_USERNAME_KEY } from './constants'
+
 export class HttpError extends Error {
   status: number
   info: any
@@ -36,7 +38,7 @@ export async function apiClient<T = any>(endpoint: string, options: ApiClientOpt
     ...customHeaders,
   })
 
-  const token = localStorage.getItem('token')
+  const token = localStorage.getItem(AUTH_TOKEN_KEY)
   if (token) {
     headers.set('Authorization', `Bearer ${token}`)
   }
@@ -75,5 +77,13 @@ export async function apiClient<T = any>(endpoint: string, options: ApiClientOpt
     )
   }
 
-  return response.json()
+  const result = await response.json()
+
+  if (result.code === 10001) {
+    localStorage.removeItem(AUTH_TOKEN_KEY)
+    localStorage.removeItem(AUTH_USER_ID_KEY)
+    localStorage.removeItem(AUTH_USERNAME_KEY)
+  }
+
+  return result
 }

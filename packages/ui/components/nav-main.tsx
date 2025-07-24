@@ -19,23 +19,21 @@ import {
   SidebarMenuSubItem,
 } from './basic/sidebar'
 
-export function NavMain({
-  items,
-}: {
-  items: {
+export interface NavMainItem {
+  title: string
+  url: string
+  icon: LucideIcon
+  isActive?: boolean
+  items?: {
     title: string
     url: string
-    icon: LucideIcon
-    isActive?: boolean
-    items?: {
-      title: string
-      url: string
-    }[]
   }[]
-}) {
+}
+
+export function NavMain({ items }: { items: NavMainItem[] }) {
   return (
     <SidebarGroup>
-      <SidebarGroupLabel>Platform</SidebarGroupLabel>
+      <SidebarGroupLabel>基础菜单</SidebarGroupLabel>
       <SidebarMenu>
         {items.map(item => (
           <Collapsible key={item.title} asChild defaultOpen={item.isActive}>

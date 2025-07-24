@@ -15,5 +15,5 @@ export const MenuSchema = z.object({
 export type MenuDTO = z.infer<typeof MenuSchema>
 
 export async function fetchMenus() {
-  return apiClient('/sys/menu/list')
+  return apiClient<MenuDTO[]>('/sys/menu/list')
 }
