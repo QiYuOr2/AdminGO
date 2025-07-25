@@ -7,6 +7,12 @@ import (
 	"gorm.io/gorm"
 )
 
+// MenuRepositoryInterface defines the interface for menu data operations.
+type MenuRepositoryInterface interface {
+	crud.Repository[model.Menu]
+	FindByPermissionCodes(permissionCodes []string) ([]model.Menu, error)
+}
+
 type MenuRepository struct {
 	crud.Repository[model.Menu]
 }

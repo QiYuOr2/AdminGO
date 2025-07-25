@@ -2,6 +2,7 @@ package api
 
 import (
 	"admingo/api/sys"
+	"admingo/internal/container"
 	"admingo/internal/modules/auth"
 	"admingo/internal/modules/menu"
 
@@ -9,8 +10,6 @@ import (
 	RBACService "admingo/internal/modules/rbac/service"
 	"admingo/internal/pkg/response"
 	"admingo/pkg/crud"
-
-	"gorm.io/gorm"
 )
 
 type HandlerCenter struct {
@@ -21,28 +20,28 @@ type HandlerCenter struct {
 	Menu       *menu.Handler
 }
 
-func BuildHandlers(db *gorm.DB) *HandlerCenter {
+func BuildHandlers(container *container.ServiceContainer) *HandlerCenter {
 	responder := response.NewAGOResponder()
 
-	userRepo := RBACRepo.NewUserRepository(db)
-	roleRepo := RBACRepo.NewRoleRepository(db)
-	permissionRepo := RBACRepo.NewPermissionRepository(db)
+	// Repositories
+	userRepo := RBACRepo.NewUserRepository(container.DB)
+	roleRepo := RBACRepo.NewRoleRepository(container.DB)
+	permissionRepo := RBACRepo.NewPermissionRepository(container.DB)
+	menuRepo := menu.NewMenuRepository(container.DB)
 
+	// Services
 	rbacService := RBACService.NewRBACService(userRepo, roleRepo, permissionRepo)
-	authService := auth.NewService(rbacService)
-	authHandler := auth.NewHandler(authService, responder)
-
+	authService := auth.NewService(rbacService, container.JWT)
 	userService := crud.NewService(userRepo)
-	userHandler := crud.NewHandler(userService, responder)
-
 	roleService := crud.NewService(roleRepo)
-	roleHandler := crud.NewHandler(roleService, responder)
-
 	permissionService := crud.NewService(permissionRepo)
-	permissionHandler := crud.NewHandler(permissionService, responder)
-
-	menuRepo := menu.NewMenuRepository(db)
 	menuService := menu.NewMenuService(menuRepo, rbacService)
+
+	// Handlers
+	authHandler := auth.NewHandler(authService, responder)
+	userHandler := crud.NewHandler(userService, responder)
+	roleHandler := crud.NewHandler(roleService, responder)
+	permissionHandler := crud.NewHandler(permissionService, responder)
 	menuHandler := menu.NewMenuHandler(menuService, responder)
 
 	return &HandlerCenter{

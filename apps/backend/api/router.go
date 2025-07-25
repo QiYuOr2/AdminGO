@@ -3,6 +3,7 @@ package api
 import (
 	"admingo/api/auth"
 	"admingo/api/sys"
+	"admingo/internal/container"
 	"admingo/internal/middleware"
 	"admingo/internal/pkg/ecode"
 	"admingo/internal/pkg/response"
@@ -14,7 +15,7 @@ func hello(c *gin.Context) {
 	response.Result[any](c, int(ecode.OK), "hello", nil)
 }
 
-func SetupRouter(hc *HandlerCenter) *gin.Engine {
+func SetupRouter(hc *HandlerCenter, container *container.ServiceContainer) *gin.Engine {
 	r := gin.Default()
 
 	r.Use(middleware.I18n())
@@ -24,11 +25,13 @@ func SetupRouter(hc *HandlerCenter) *gin.Engine {
 
 	api := r.Group("/api")
 	{
+		jwt := container.JWT
+
 		auth.Router(api, hc.Auth)
-		sys.UserRouter(api.Group("/sys/user"), hc.User)
-		sys.RoleRouter(api.Group("/sys/role"), hc.Role)
-		sys.PermissionRouter(api.Group("/sys/permission"), hc.Permission)
-		sys.MenuRouter(api.Group("/sys/menu"), hc.Menu)
+		sys.UserRouter(api.Group("/sys/user"), hc.User, jwt)
+		sys.RoleRouter(api.Group("/sys/role"), hc.Role, jwt)
+		sys.PermissionRouter(api.Group("/sys/permission"), hc.Permission, jwt)
+		sys.MenuRouter(api.Group("/sys/menu"), hc.Menu, jwt)
 	}
 
 	return r

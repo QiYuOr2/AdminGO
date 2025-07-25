@@ -2,8 +2,10 @@ package main
 
 import (
 	"admingo/api"
+	"admingo/internal/container"
 	"admingo/internal/modules/auth"
 	"admingo/internal/modules/config"
+	"admingo/internal/modules/jwt"
 	"admingo/internal/modules/menu"
 	"admingo/internal/modules/rbac"
 	"fmt"
@@ -43,8 +45,15 @@ func main() {
 	menu.AutoMigrate(db)
 	menu.Init(db)
 
-	hc := api.BuildHandlers(db)
-	r := api.SetupRouter(hc)
+	// Create services
+	jwt := jwt.New([]byte(config.Conf.JWT.Secret))
+
+	// Create service container
+	container := container.New(db, jwt)
+
+	// Build handlers and setup router
+	hc := api.BuildHandlers(container)
+	r := api.SetupRouter(hc, container)
 
 	r.GET("/swagger/doc.json", func(c *gin.Context) {
 		c.Data(200, "application/json;  charset=utf-8", []byte(docs.SwaggerInfo.ReadDoc()))

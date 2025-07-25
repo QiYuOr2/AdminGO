@@ -2,6 +2,7 @@ package sys
 
 import (
 	"admingo/internal/middleware"
+	"admingo/internal/modules/jwt"
 	"admingo/internal/modules/rbac/model"
 	"admingo/pkg/crud"
 
@@ -10,8 +11,8 @@ import (
 
 type PermissionHandler = crud.Handler[model.Permission]
 
-func PermissionRouter(rg *gin.RouterGroup, handler *PermissionHandler) {
-	rg.Use(middleware.JWT())
+func PermissionRouter(rg *gin.RouterGroup, handler *PermissionHandler, jwt *jwt.JWT) {
+	rg.Use(middleware.JWT(jwt))
 
 	rg.GET("/:id", handler.GetByID)
 }

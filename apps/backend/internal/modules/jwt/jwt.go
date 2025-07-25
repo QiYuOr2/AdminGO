@@ -3,14 +3,21 @@ package jwt
 import (
 	"time"
 
-	"admingo/internal/modules/config"
-
 	"github.com/golang-jwt/jwt/v5"
 )
 
-var jwtKey = []byte(config.Conf.JWT.Secret)
+// JWT handles JWT token generation and validation.
+type JWT struct {
+	secret []byte
+}
 
-func GenerateToken(userID uint, username string, permissions []string) (string, error) {
+// New creates a new JWT instance with the given secret.
+func New(secret []byte) *JWT {
+	return &JWT{secret: secret}
+}
+
+// GenerateToken generates a new JWT token.
+func (j *JWT) GenerateToken(userID uint, username string, permissions []string) (string, error) {
 	expirationTime := time.Now().Add(24 * time.Hour)
 	claims := &CustomClaims{
 		UserID:      userID,
@@ -22,16 +29,15 @@ func GenerateToken(userID uint, username string, permissions []string) (string, 
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenString, err := token.SignedString(jwtKey)
-
-	return tokenString, err
+	return token.SignedString(j.secret)
 }
 
-func ValidateToken(tokenString string) (*CustomClaims, error) {
+// ValidateToken validates a JWT token.
+func (j *JWT) ValidateToken(tokenString string) (*CustomClaims, error) {
 	claims := &CustomClaims{}
 
 	token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (any, error) {
-		return jwtKey, nil
+		return j.secret, nil
 	})
 
 	if err != nil {

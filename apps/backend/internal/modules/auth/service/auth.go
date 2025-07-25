@@ -9,10 +9,11 @@ import (
 
 type Service struct {
 	rbacService *rbac.Service
+	jwt         *jwt.JWT
 }
 
-func New(rbac *rbac.Service) *Service {
-	return &Service{rbacService: rbac}
+func New(rbac *rbac.Service, jwt *jwt.JWT) *Service {
+	return &Service{rbacService: rbac, jwt: jwt}
 }
 
 func (s *Service) Login(username, password string) (*dto.LoginResponseDTO, error) {
@@ -27,7 +28,7 @@ func (s *Service) Login(username, password string) (*dto.LoginResponseDTO, error
 		return nil, ecode.New(ecode.Error_PermissionDenied, "获取用户权限失败")
 	}
 
-	token, err := jwt.GenerateToken(user.ID, user.Username, perms)
+	token, err := s.jwt.GenerateToken(user.ID, user.Username, perms)
 	if err != nil {
 		return nil, ecode.New(ecode.Error_TokenGenerateFail, "生成 Token 失败")
 	}

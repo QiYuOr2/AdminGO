@@ -9,11 +9,11 @@ import (
 
 type MenuService struct {
 	*crud.Service[model.Menu]
-	repo *repository.MenuRepository
+	repo repository.MenuRepositoryInterface
 	rbac rbacService.RBACServiceInterface
 }
 
-func New(repo *repository.MenuRepository, rbac rbacService.RBACServiceInterface) *MenuService {
+func New(repo repository.MenuRepositoryInterface, rbac rbacService.RBACServiceInterface) *MenuService {
 	return &MenuService{
 		Service: crud.NewService(repo),
 		repo:    repo,
@@ -34,6 +34,10 @@ func (s *MenuService) FindByUserID(userID uint) ([]model.Menu, error) {
 	menus, err := s.repo.FindByPermissionCodes(permissions)
 	if err != nil {
 		return nil, err
+	}
+
+	if menus == nil {
+		menus = []model.Menu{}
 	}
 
 	return menus, nil
