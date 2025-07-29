@@ -10,6 +10,7 @@ export const MenuSchema = z.object({
   hidden: z.boolean(),
   keepAlive: z.boolean(),
   externalLink: z.boolean(),
+  sort: z.number().optional(),
 })
 
 export type MenuDTO = z.infer<typeof MenuSchema>

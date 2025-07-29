@@ -11,6 +11,7 @@ type MenuDTO struct {
 	Hidden       bool   `json:"hidden"`
 	KeepAlive    bool   `json:"keepAlive"`
 	ExternalLink bool   `json:"externalLink"`
+	Sort         int    `json:"sort"`
 }
 
 func FromModelToDTO(menu model.Menu) MenuDTO {
@@ -23,6 +24,7 @@ func FromModelToDTO(menu model.Menu) MenuDTO {
 		Hidden:       menu.Hidden,
 		KeepAlive:    menu.KeepAlive,
 		ExternalLink: menu.ExternalLink,
+		Sort:         menu.Sort,
 	}
 }
 

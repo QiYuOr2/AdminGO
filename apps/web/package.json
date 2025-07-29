@@ -26,6 +26,7 @@
     "@tanstack/react-query": "catalog:",
     "@tanstack/react-router": "catalog:",
     "@tanstack/react-router-devtools": "catalog:",
+    "@tanstack/react-table": "catalog:",
     "class-variance-authority": "catalog:styles",
     "clsx": "catalog:styles",
     "i18next": "catalog:utils",
