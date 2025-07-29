@@ -64,9 +64,11 @@ func Init(db *gorm.DB) error {
 		return err
 	}
 
+	parentID := uint(1)
 	menus := []model.Menu{
-		{Title: "菜单管理", Path: "/settings/menu", PermissionCode: "settings:menu"},
-		{Title: "系统设置", Path: "/settings/settings", PermissionCode: "settings:settings"},
+		{Title: "系统设置", Path: "/settings"},
+		{Title: "菜单管理", Path: "/settings/menu", PermissionCode: "settings:menu", ParentID: &parentID},
+		{Title: "通用设置", Path: "/settings/settings", PermissionCode: "settings:settings", ParentID: &parentID},
 	}
 
 	for _, menu := range menus {

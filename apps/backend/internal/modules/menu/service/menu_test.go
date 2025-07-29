@@ -78,14 +78,36 @@ func (m *MockMenuRepository) FindByPermissionCodes(permissionCodes []string) ([]
 	return result, nil
 }
 
+func (m *MockMenuRepository) FindAllByIDs(ids []uint) ([]model.Menu, error) {
+	if m.err != nil {
+		return nil, m.err
+	}
+	var result []model.Menu
+	for _, menu := range m.menus {
+		for _, id := range ids {
+			if menu.ID == id {
+				result = append(result, menu)
+				break
+			}
+		}
+	}
+	return result, nil
+}
+
 // --- Tests ---
 
 func TestMenuService_FindByUserID(t *testing.T) {
+	rootID := uint(1)
+	sysID := uint(2)
+	userID := uint(3)
+	roleID := uint(4)
+
 	allMenus := []model.Menu{
-		{Model: gorm.Model{ID: 1}, Title: "Dashboard", PermissionCode: "dashboard:view"},
-		{Model: gorm.Model{ID: 2}, Title: "User Management", PermissionCode: "sys:user:view"},
-		{Model: gorm.Model{ID: 3}, Title: "Role Management", PermissionCode: "sys:role:view"},
-		{Model: gorm.Model{ID: 4}, Title: "Settings", PermissionCode: "sys:settings:view"},
+		{Model: gorm.Model{ID: rootID}, Title: "Dashboard", PermissionCode: "dashboard:view"},
+		{Model: gorm.Model{ID: sysID}, Title: "System", PermissionCode: "sys:view", ParentID: &rootID},
+		{Model: gorm.Model{ID: userID}, Title: "User Management", PermissionCode: "sys:user:view", ParentID: &sysID},
+		{Model: gorm.Model{ID: roleID}, Title: "Role Management", PermissionCode: "sys:role:view", ParentID: &sysID},
+		{Model: gorm.Model{ID: 5}, Title: "Edit Role", PermissionCode: "sys:role:edit", ParentID: &roleID},
 	}
 
 	tests := []struct {
@@ -102,8 +124,9 @@ func TestMenuService_FindByUserID(t *testing.T) {
 			userID:          1,
 			mockPermissions: []string{"dashboard:view", "sys:user:view"},
 			wantMenus: []model.Menu{
-				allMenus[0],
-				allMenus[1],
+				allMenus[0], // dashboard:view
+				allMenus[2], // sys:user:view
+				allMenus[1], // parent of sys:user:view
 			},
 			wantErr: false,
 		},
@@ -129,6 +152,18 @@ func TestMenuService_FindByUserID(t *testing.T) {
 			wantMenus:       nil,
 			wantErr:         true,
 		},
+		{
+			name:            "Success - With parent lookup",
+			userID:          5,
+			mockPermissions: []string{"sys:role:edit"},
+			wantMenus: []model.Menu{
+				allMenus[4], // sys:role:edit
+				allMenus[3], // sys:role:view
+				allMenus[1], // sys:view
+				allMenus[0], // dashboard:view
+			},
+			wantErr: false,
+		},
 	}
 
 	for _, tt := range tests {
@@ -149,7 +184,7 @@ func TestMenuService_FindByUserID(t *testing.T) {
 				require.Nil(t, gotMenus)
 			} else {
 				require.NoError(t, err)
-				require.Equal(t, tt.wantMenus, gotMenus)
+				require.ElementsMatch(t, tt.wantMenus, gotMenus)
 			}
 		})
 	}

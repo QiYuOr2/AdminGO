@@ -36,9 +36,39 @@ func (s *MenuService) FindByUserID(userID uint) ([]model.Menu, error) {
 		return nil, err
 	}
 
-	if menus == nil {
-		menus = []model.Menu{}
+	allMenus := make(map[uint]model.Menu)
+	for _, menu := range menus {
+		allMenus[menu.ID] = menu
 	}
 
-	return menus, nil
+	parentIDs := make([]uint, 0)
+	for _, menu := range menus {
+		if menu.ParentID != nil {
+			parentIDs = append(parentIDs, *menu.ParentID)
+		}
+	}
+
+	for len(parentIDs) > 0 {
+		parentMenus, err := s.repo.FindAllByIDs(parentIDs)
+		if err != nil {
+			return nil, err
+		}
+
+		parentIDs = make([]uint, 0)
+		for _, parentMenu := range parentMenus {
+			if _, ok := allMenus[parentMenu.ID]; !ok {
+				allMenus[parentMenu.ID] = parentMenu
+				if parentMenu.ParentID != nil {
+					parentIDs = append(parentIDs, *parentMenu.ParentID)
+				}
+			}
+		}
+	}
+
+	result := make([]model.Menu, 0, len(allMenus))
+	for _, menu := range allMenus {
+		result = append(result, menu)
+	}
+
+	return result, nil
 }

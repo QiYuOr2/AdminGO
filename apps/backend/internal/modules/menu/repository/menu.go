@@ -11,6 +11,7 @@ import (
 type MenuRepositoryInterface interface {
 	crud.Repository[model.Menu]
 	FindByPermissionCodes(permissionCodes []string) ([]model.Menu, error)
+	FindAllByIDs(ids []uint) ([]model.Menu, error)
 }
 
 type MenuRepository struct {
@@ -26,6 +27,14 @@ func New(db *gorm.DB) *MenuRepository {
 func (r *MenuRepository) FindByPermissionCodes(permissionCodes []string) ([]model.Menu, error) {
 	var menus []model.Menu
 	if err := r.GetDB().Where("permission_code IN (?)", permissionCodes).Find(&menus).Error; err != nil {
+		return nil, err
+	}
+	return menus, nil
+}
+
+func (r *MenuRepository) FindAllByIDs(ids []uint) ([]model.Menu, error) {
+	var menus []model.Menu
+	if err := r.GetDB().Where("id IN (?)", ids).Find(&menus).Error; err != nil {
 		return nil, err
 	}
 	return menus, nil
