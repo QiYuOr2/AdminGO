@@ -13,6 +13,9 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as R404RouteImport } from './routes/404'
 import { Route as DashboardRouteRouteImport } from './routes/dashboard/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DashboardSettingsRouteRouteImport } from './routes/dashboard/settings/route'
+import { Route as DashboardSettingsSettingsRouteImport } from './routes/dashboard/settings/settings'
+import { Route as DashboardSettingsMenuRouteImport } from './routes/dashboard/settings/menu'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -34,37 +37,84 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardSettingsRouteRoute = DashboardSettingsRouteRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => DashboardRouteRoute,
+} as any)
+const DashboardSettingsSettingsRoute =
+  DashboardSettingsSettingsRouteImport.update({
+    id: '/settings',
+    path: '/settings',
+    getParentRoute: () => DashboardSettingsRouteRoute,
+  } as any)
+const DashboardSettingsMenuRoute = DashboardSettingsMenuRouteImport.update({
+  id: '/menu',
+  path: '/menu',
+  getParentRoute: () => DashboardSettingsRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/dashboard': typeof DashboardRouteRoute
+  '/dashboard': typeof DashboardRouteRouteWithChildren
   '/404': typeof R404Route
   '/login': typeof LoginRoute
+  '/dashboard/settings': typeof DashboardSettingsRouteRouteWithChildren
+  '/dashboard/settings/menu': typeof DashboardSettingsMenuRoute
+  '/dashboard/settings/settings': typeof DashboardSettingsSettingsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/dashboard': typeof DashboardRouteRoute
+  '/dashboard': typeof DashboardRouteRouteWithChildren
   '/404': typeof R404Route
   '/login': typeof LoginRoute
+  '/dashboard/settings': typeof DashboardSettingsRouteRouteWithChildren
+  '/dashboard/settings/menu': typeof DashboardSettingsMenuRoute
+  '/dashboard/settings/settings': typeof DashboardSettingsSettingsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/dashboard': typeof DashboardRouteRoute
+  '/dashboard': typeof DashboardRouteRouteWithChildren
   '/404': typeof R404Route
   '/login': typeof LoginRoute
+  '/dashboard/settings': typeof DashboardSettingsRouteRouteWithChildren
+  '/dashboard/settings/menu': typeof DashboardSettingsMenuRoute
+  '/dashboard/settings/settings': typeof DashboardSettingsSettingsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/dashboard' | '/404' | '/login'
+  fullPaths:
+    | '/'
+    | '/dashboard'
+    | '/404'
+    | '/login'
+    | '/dashboard/settings'
+    | '/dashboard/settings/menu'
+    | '/dashboard/settings/settings'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/dashboard' | '/404' | '/login'
-  id: '__root__' | '/' | '/dashboard' | '/404' | '/login'
+  to:
+    | '/'
+    | '/dashboard'
+    | '/404'
+    | '/login'
+    | '/dashboard/settings'
+    | '/dashboard/settings/menu'
+    | '/dashboard/settings/settings'
+  id:
+    | '__root__'
+    | '/'
+    | '/dashboard'
+    | '/404'
+    | '/login'
+    | '/dashboard/settings'
+    | '/dashboard/settings/menu'
+    | '/dashboard/settings/settings'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  DashboardRouteRoute: typeof DashboardRouteRoute
+  DashboardRouteRoute: typeof DashboardRouteRouteWithChildren
   R404Route: typeof R404Route
   LoginRoute: typeof LoginRoute
 }
@@ -99,12 +149,61 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard/settings': {
+      id: '/dashboard/settings'
+      path: '/settings'
+      fullPath: '/dashboard/settings'
+      preLoaderRoute: typeof DashboardSettingsRouteRouteImport
+      parentRoute: typeof DashboardRouteRoute
+    }
+    '/dashboard/settings/settings': {
+      id: '/dashboard/settings/settings'
+      path: '/settings'
+      fullPath: '/dashboard/settings/settings'
+      preLoaderRoute: typeof DashboardSettingsSettingsRouteImport
+      parentRoute: typeof DashboardSettingsRouteRoute
+    }
+    '/dashboard/settings/menu': {
+      id: '/dashboard/settings/menu'
+      path: '/menu'
+      fullPath: '/dashboard/settings/menu'
+      preLoaderRoute: typeof DashboardSettingsMenuRouteImport
+      parentRoute: typeof DashboardSettingsRouteRoute
+    }
   }
 }
 
+interface DashboardSettingsRouteRouteChildren {
+  DashboardSettingsMenuRoute: typeof DashboardSettingsMenuRoute
+  DashboardSettingsSettingsRoute: typeof DashboardSettingsSettingsRoute
+}
+
+const DashboardSettingsRouteRouteChildren: DashboardSettingsRouteRouteChildren =
+  {
+    DashboardSettingsMenuRoute: DashboardSettingsMenuRoute,
+    DashboardSettingsSettingsRoute: DashboardSettingsSettingsRoute,
+  }
+
+const DashboardSettingsRouteRouteWithChildren =
+  DashboardSettingsRouteRoute._addFileChildren(
+    DashboardSettingsRouteRouteChildren,
+  )
+
+interface DashboardRouteRouteChildren {
+  DashboardSettingsRouteRoute: typeof DashboardSettingsRouteRouteWithChildren
+}
+
+const DashboardRouteRouteChildren: DashboardRouteRouteChildren = {
+  DashboardSettingsRouteRoute: DashboardSettingsRouteRouteWithChildren,
+}
+
+const DashboardRouteRouteWithChildren = DashboardRouteRoute._addFileChildren(
+  DashboardRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  DashboardRouteRoute: DashboardRouteRoute,
+  DashboardRouteRoute: DashboardRouteRouteWithChildren,
   R404Route: R404Route,
   LoginRoute: LoginRoute,
 }

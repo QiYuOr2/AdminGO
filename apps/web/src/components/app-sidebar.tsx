@@ -9,10 +9,12 @@ import {
 } from '@ago/ui'
 import { NavMain } from '@ago/ui/nav-main.tsx'
 import { NavUser } from '@ago/ui/nav-user.tsx'
+import { useLocation } from '@tanstack/react-router'
 import {
   Command,
 } from 'lucide-react'
 import * as React from 'react'
+import { useMemo } from 'react'
 import { buildSidebarMenu } from '~/common/utils/menu'
 import { useAppContext } from '~/contexts/AppContext'
 
@@ -26,8 +28,13 @@ const data = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { menus } = useAppContext()
+  const location = useLocation()
 
-  const navItems = menus ? buildSidebarMenu('/dashboard', menus) : []
+  const navItems = useMemo(() => {
+    return menus
+      ? buildSidebarMenu('/dashboard', menus, location.pathname.replace('/dashboard', ''))
+      : []
+  }, [menus, location.pathname])
 
   return (
     <Sidebar variant="inset" {...props}>
@@ -50,8 +57,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={navItems} />
-        {/* <NavProjects projects={data.projects} /> */}
-        {/* <NavSecondary items={data.navSecondary} className="mt-auto" /> */}
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={data.user} />

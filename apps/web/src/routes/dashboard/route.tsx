@@ -12,8 +12,12 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from '@ago/ui/basic/sidebar.tsx'
-import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
+import { cn } from '@ago/ui/utils'
+import { createFileRoute, Outlet, redirect, useLocation } from '@tanstack/react-router'
+import { useMemo } from 'react'
+import { buildBreadcrumbs } from '~/common/utils/menu'
 import { AppSidebar } from '~/components/app-sidebar.tsx'
+import { useAppContext } from '~/contexts/AppContext'
 
 export const Route = createFileRoute('/dashboard')({
   beforeLoad: async ({ context }) => {
@@ -25,6 +29,29 @@ export const Route = createFileRoute('/dashboard')({
 })
 
 function RouteComponent() {
+  const { menus } = useAppContext()
+  const location = useLocation()
+  const breadcrumbs = useMemo(() => {
+    return menus ? buildBreadcrumbs(menus, location.pathname) : []
+  }, [menus, location.pathname])
+
+  const BreadcrumbNav = () => (
+    <Breadcrumb>
+      <BreadcrumbList>
+        {breadcrumbs.map((item, index, array) => (
+          <>
+            <BreadcrumbItem key={item.path} className={index < breadcrumbs.length - 1 ? 'hidden md:block' : ''}>
+              {index < breadcrumbs.length - 1
+                ? <BreadcrumbLink href={item.path}>{item.title}</BreadcrumbLink>
+                : <BreadcrumbPage>{item.title}</BreadcrumbPage>}
+            </BreadcrumbItem>
+            {array.length - 1 > index && <BreadcrumbSeparator className="hidden md:block" />}
+          </>
+        ))}
+      </BreadcrumbList>
+    </Breadcrumb>
+  )
+
   return (
     <div>
       <SidebarProvider>
@@ -37,22 +64,12 @@ function RouteComponent() {
                 orientation="vertical"
                 className="mr-2 data-[orientation=vertical]:h-4"
               />
-              <Breadcrumb>
-                <BreadcrumbList>
-                  <BreadcrumbItem className="hidden md:block">
-                    <BreadcrumbLink href="#">
-                      Building Your Application
-                    </BreadcrumbLink>
-                  </BreadcrumbItem>
-                  <BreadcrumbSeparator className="hidden md:block" />
-                  <BreadcrumbItem>
-                    <BreadcrumbPage>Data Fetching</BreadcrumbPage>
-                  </BreadcrumbItem>
-                </BreadcrumbList>
-              </Breadcrumb>
+              <BreadcrumbNav />
             </div>
           </header>
-          <Outlet />
+          <div className={cn('flex-1 overflow-y-auto px-4')}>
+            <Outlet />
+          </div>
         </SidebarInset>
       </SidebarProvider>
     </div>
