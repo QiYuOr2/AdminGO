@@ -14,15 +14,19 @@
     "@radix-ui/react-label": "catalog:styles",
     "@radix-ui/react-separator": "catalog:styles",
     "@radix-ui/react-slot": "catalog:styles",
+    "@radix-ui/react-switch": "catalog:styles",
     "@radix-ui/react-tooltip": "catalog:styles",
     "@types/react": "catalog:types",
     "@types/react-dom": "catalog:types",
     "class-variance-authority": "catalog:styles",
     "clsx": "catalog:styles",
     "lucide-react": "catalog:styles",
+    "next-themes": "catalog:",
     "react": "catalog:web",
     "react-dom": "catalog:web",
+    "sonner": "catalog:styles",
     "tailwind-merge": "catalog:styles"
+
   },
   "dependencies": {
     "@ago/ui": "workspace:*"

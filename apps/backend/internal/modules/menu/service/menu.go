@@ -3,6 +3,7 @@ package service
 import (
 	"admingo/internal/modules/menu/model"
 	"admingo/internal/modules/menu/repository"
+	rbacModel "admingo/internal/modules/rbac/model"
 	rbacService "admingo/internal/modules/rbac/service"
 	"admingo/pkg/crud"
 )
@@ -71,4 +72,67 @@ func (s *MenuService) FindByUserID(userID uint) ([]model.Menu, error) {
 	}
 
 	return result, nil
+}
+
+func (s *MenuService) CreateMenu(menu *model.Menu) error {
+	if menu.PermissionCode != "" {
+		_, err := s.rbac.CreatePermission(menu.PermissionCode, menu.Path)
+		if err != nil {
+			return err
+		}
+		err = s.rbac.AssignPermissionToRole("Admin", menu.PermissionCode)
+		if err != nil {
+			return err
+		}
+	}
+	return s.repo.Create(menu)
+}
+
+func (s *MenuService) UpdateMenu(id uint, newMenu *model.Menu) error {
+	menu, err := s.repo.GetByID(id)
+	if err != nil {
+		return err
+	}
+
+	if menu.PermissionCode != newMenu.PermissionCode {
+		if menu.PermissionCode != "" {
+			err := s.rbac.DeletePermission(menu.PermissionCode)
+			if err != nil {
+				return err
+			}
+		}
+		if newMenu.PermissionCode != "" {
+			_, err := s.rbac.CreatePermission(newMenu.PermissionCode, newMenu.Path)
+			if err != nil {
+				return err
+			}
+			err = s.rbac.AssignPermissionToRole("Admin", newMenu.PermissionCode)
+			if err != nil {
+				return err
+			}
+		}
+	} else if menu.Path != newMenu.Path {
+		err := s.rbac.UpdatePermission(menu.PermissionCode, &rbacModel.Permission{Path: newMenu.Path})
+		if err != nil {
+			return err
+		}
+	}
+
+	return s.repo.Update(newMenu)
+}
+
+func (s *MenuService) DeleteMenu(id uint) error {
+	menu, err := s.repo.GetByID(id)
+	if err != nil {
+		return err
+	}
+
+	if menu.PermissionCode != "" {
+		err := s.rbac.DeletePermission(menu.PermissionCode)
+		if err != nil {
+			return err
+		}
+	}
+
+	return s.repo.Delete(id)
 }

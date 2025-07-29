@@ -11,6 +11,8 @@ import (
 func MenuRouter(rg *gin.RouterGroup, handler *menu.Handler, jwt *jwt.JWT) {
 	rg.Use(middleware.JWT(jwt))
 
-	// rg.GET("/", handler.List)
 	rg.GET("/list", handler.FindByUserID)
+	rg.POST("/", handler.CreateMenu)
+	rg.PUT("/:id", handler.UpdateMenu)
+	rg.DELETE("/:id", handler.DeleteMenu)
 }

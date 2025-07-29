@@ -6,6 +6,7 @@ import (
 	"admingo/internal/modules/menu/service"
 	"admingo/internal/pkg/response"
 	"admingo/pkg/crud"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -49,4 +50,57 @@ func (h *MenuHandler) FindByUserID(c *gin.Context) {
 	dtos := dto.FromModelListToDTOList(menus)
 
 	h.responder.Success(c, dtos)
+}
+
+func (h *MenuHandler) CreateMenu(c *gin.Context) {
+	var menuDTO dto.MenuDTO
+	if err := c.ShouldBindJSON(&menuDTO); err != nil {
+		h.responder.ErrorWithMessage(c, "Invalid request body")
+		return
+	}
+
+	menu := dto.FromDTOToModel(menuDTO)
+	if err := h.service.CreateMenu(&menu); err != nil {
+		h.responder.ErrorWithMessage(c, "Failed to create menu")
+		return
+	}
+
+	h.responder.Success(c, menu)
+}
+
+func (h *MenuHandler) UpdateMenu(c *gin.Context) {
+	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
+	if err != nil {
+		h.responder.ErrorWithMessage(c, "Invalid ID")
+		return
+	}
+
+	var menuDTO dto.MenuDTO
+	if err := c.ShouldBindJSON(&menuDTO); err != nil {
+		h.responder.ErrorWithMessage(c, "Invalid request body")
+		return
+	}
+
+	menu := dto.FromDTOToModel(menuDTO)
+	if err := h.service.UpdateMenu(uint(id), &menu); err != nil {
+		h.responder.ErrorWithMessage(c, "Failed to update menu")
+		return
+	}
+
+	h.responder.Success(c, menu)
+}
+
+func (h *MenuHandler) DeleteMenu(c *gin.Context) {
+	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
+	if err != nil {
+		h.responder.ErrorWithMessage(c, "Invalid ID")
+		return
+	}
+
+	if err := h.service.DeleteMenu(uint(id)); err != nil {
+		h.responder.ErrorWithMessage(c, "Failed to delete menu")
+		return
+	}
+
+	h.responder.Success(c, gin.H{"message": "Menu deleted successfully"})
 }

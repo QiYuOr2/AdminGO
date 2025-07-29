@@ -16,3 +16,11 @@ func NewPermissionRepository(db *gorm.DB) *PermissionRepository {
 		Repository: crud.NewRepository[model.Permission](db),
 	}
 }
+
+func (r *PermissionRepository) UpdateByCode(code string, newPerm *model.Permission) error {
+	return r.GetDB().Where("code = ?", code).Updates(newPerm).Error
+}
+
+func (r *PermissionRepository) DeleteByCode(code string) error {
+	return r.GetDB().Where("code = ?", code).Delete(&model.Permission{}).Error
+}

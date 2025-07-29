@@ -26,3 +26,17 @@ func (r *RoleRepository) GetRolePermissions(roleID uint) ([]model.Permission, er
 	}
 	return role.Permissions, nil
 }
+
+func (r *RoleRepository) AssignPermissionToRole(roleName string, permissionCode string) error {
+	var role model.Role
+	if err := r.GetDB().Where("name = ?", roleName).First(&role).Error; err != nil {
+		return err
+	}
+
+	var permission model.Permission
+	if err := r.GetDB().Where("code = ?", permissionCode).First(&permission).Error; err != nil {
+		return err
+	}
+
+	return r.GetDB().Model(&role).Association("Permissions").Append(&permission)
+}

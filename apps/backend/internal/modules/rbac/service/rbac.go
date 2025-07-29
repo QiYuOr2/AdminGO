@@ -18,6 +18,10 @@ type RBACServiceInterface interface {
 	GetUserRoles(userID uint) ([]model.Role, error)
 	GetRolePermissions(roleID uint) ([]model.Permission, error)
 	GetUserPermissions(userID uint) ([]string, error)
+	CreatePermission(code, path string) (*model.Permission, error)
+	UpdatePermission(code string, newPerm *model.Permission) error
+	DeletePermission(code string) error
+	AssignPermissionToRole(roleName string, permissionCode string) error
 }
 
 func NewRBACService(userRepo *repository.UserRepository, roleRepo *repository.RoleRepository, permissionRepo *repository.PermissionRepository) *RBACService {
@@ -101,4 +105,22 @@ func HasPermission(userPermissions []string, permissionCode string) bool {
 	}
 
 	return false
+}
+
+func (s *RBACService) CreatePermission(code, path string) (*model.Permission, error) {
+	permission := &model.Permission{Code: code, Path: path}
+	err := s.permissionRepo.Create(permission)
+	return permission, err
+}
+
+func (s *RBACService) UpdatePermission(code string, newPerm *model.Permission) error {
+	return s.permissionRepo.UpdateByCode(code, newPerm)
+}
+
+func (s *RBACService) DeletePermission(code string) error {
+	return s.permissionRepo.DeleteByCode(code)
+}
+
+func (s *RBACService) AssignPermissionToRole(roleName string, permissionCode string) error {
+	return s.roleRepo.AssignPermissionToRole(roleName, permissionCode)
 }

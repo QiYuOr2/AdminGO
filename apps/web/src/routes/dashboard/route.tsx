@@ -45,7 +45,10 @@ function RouteComponent() {
                 ? <BreadcrumbLink href={item.path}>{item.title}</BreadcrumbLink>
                 : <BreadcrumbPage>{item.title}</BreadcrumbPage>}
             </BreadcrumbItem>
-            {array.length - 1 > index && <BreadcrumbSeparator className="hidden md:block" />}
+            {
+              array.length - 1 > index
+              && <BreadcrumbSeparator key={`${item.path}#sep`} className="hidden md:block" />
+            }
           </>
         ))}
       </BreadcrumbList>
