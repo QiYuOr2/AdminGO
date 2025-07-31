@@ -24,6 +24,7 @@
     "next-themes": "catalog:",
     "react": "catalog:web",
     "react-dom": "catalog:web",
+    "react-hook-form": "catalog:utils",
     "sonner": "catalog:styles",
     "tailwind-merge": "catalog:styles"
 
