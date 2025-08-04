@@ -12,6 +12,7 @@ export interface FieldConfig<ValueType = any> {
   max?: number
   pattern?: RegExp
   options?: Array<{ label: string, value: ValueType }>
+  placeholder?: string
 }
 
 export interface FormConfig {
