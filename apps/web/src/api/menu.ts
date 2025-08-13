@@ -3,7 +3,7 @@ import { apiClient } from '../common/apiClient'
 
 export const MenuSchema = z.object({
   id: z.number(),
-  parentId: z.number().nullable(),
+  parentId: z.number().optional(),
   title: z.string(),
   path: z.string(),
   icon: z.string().optional(),

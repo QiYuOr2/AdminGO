@@ -75,7 +75,7 @@ catalogs:
       specifier: ^1.1.14
       version: 1.1.14
     '@radix-ui/react-dropdown-menu':
-      specifier: ^2.1.15
+      specifier: 2.1.15
       version: 2.1.15
     '@radix-ui/react-label':
       specifier: 2.1.7

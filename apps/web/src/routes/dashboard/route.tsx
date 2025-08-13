@@ -39,17 +39,17 @@ function RouteComponent() {
     <Breadcrumb>
       <BreadcrumbList>
         {breadcrumbs.map((item, index, array) => (
-          <>
-            <BreadcrumbItem key={item.path} className={index < breadcrumbs.length - 1 ? 'hidden md:block' : ''}>
+          <div key={item.path} className="flex items-center gap-3">
+            <BreadcrumbItem className={index < breadcrumbs.length - 1 ? 'hidden md:block' : ''}>
               {index < breadcrumbs.length - 1
                 ? <BreadcrumbLink href={item.path}>{item.title}</BreadcrumbLink>
                 : <BreadcrumbPage>{item.title}</BreadcrumbPage>}
             </BreadcrumbItem>
             {
               array.length - 1 > index
-              && <BreadcrumbSeparator key={`${item.path}#sep`} className="hidden md:block" />
+              && <BreadcrumbSeparator className="hidden md:block" />
             }
-          </>
+          </div>
         ))}
       </BreadcrumbList>
     </Breadcrumb>

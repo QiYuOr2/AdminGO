@@ -2,9 +2,11 @@ import type { MenuDTO } from '~/api/menu'
 import type { FormConfig } from '~/components/schema-form/types'
 import { Button } from '@ago/ui/basic/button.tsx'
 import { DialogTrigger } from '@ago/ui/basic/dialog.tsx'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@ago/ui/basic/dropdown-menu.tsx'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@ago/ui/basic/table.tsx'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
+import { ChevronDown, ChevronRight, Ellipsis } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { createMenu, deleteMenu, fetchMenus, MenuSchema, updateMenu } from '~/api/menu'
@@ -85,6 +87,7 @@ function RouteComponent() {
   const queryClient = useQueryClient()
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [editingMenu, setEditingMenu] = useState<MenuDTO | null>(null)
+  const [expandedNodes, setExpandedNodes] = useState<Set<number>>(new Set())
 
   const { data: menus, isLoading, isError } = useQuery<MenuDTO[]>({
     queryKey: ['menus'],
@@ -160,6 +163,113 @@ function RouteComponent() {
     setIsDialogOpen(true)
   }
 
+  const toggleNode = (menuId: number) => {
+    setExpandedNodes((prev) => {
+      const newSet = new Set(prev)
+      if (newSet.has(menuId)) {
+        newSet.delete(menuId)
+      }
+      else {
+        newSet.add(menuId)
+      }
+      return newSet
+    })
+  }
+
+  type MenuWithChildren = MenuDTO & { children: MenuWithChildren[] }
+
+  const organizeMenuHierarchy = (menus: MenuDTO[]): MenuWithChildren[] => {
+    const menuMap = new Map<number, MenuWithChildren>()
+    const rootMenus: MenuWithChildren[] = []
+
+    menus.forEach((menu) => {
+      menuMap.set(menu.id!, { ...menu, children: [] })
+    })
+
+    menus.forEach((menu) => {
+      const menuWithChildren = menuMap.get(menu.id!)!
+      if (menu.parentId && menuMap.has(menu.parentId)) {
+        menuMap.get(menu.parentId)!.children.push(menuWithChildren)
+      }
+      else {
+        rootMenus.push(menuWithChildren)
+      }
+    })
+
+    const sortMenus = (menuList: MenuWithChildren[]) => {
+      menuList.sort((a, b) => (a.sort || 0) - (b.sort || 0))
+      menuList.forEach(menu => sortMenus(menu.children))
+    }
+    sortMenus(rootMenus)
+
+    return rootMenus
+  }
+
+  const renderMenuRows = (menuList: MenuWithChildren[], level: number = 0): React.ReactNode[] => {
+    const rows: React.ReactNode[] = []
+
+    menuList.forEach((menu) => {
+      const hasChildren = menu.children.length > 0
+      const isExpanded = expandedNodes.has(menu.id!)
+      const paddingLeft = level * 20
+
+      rows.push(
+        <TableRow key={menu.id}>
+          <TableCell>
+            <div className="flex items-center" style={{ paddingLeft: `${paddingLeft}px` }}>
+              {hasChildren
+                ? (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="p-0 h-4 w-4 mr-2"
+                      onClick={() => toggleNode(menu.id!)}
+                    >
+                      {isExpanded ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />}
+                    </Button>
+                  )
+                : (
+                    <div className="w-6 mr-2" />
+                  )}
+              {menu.title}
+            </div>
+          </TableCell>
+          <TableCell>{menu.path}</TableCell>
+          <TableCell>{menu.icon}</TableCell>
+          <TableCell>{menu.parentId ?? '无'}</TableCell>
+          <TableCell>{menu.sort}</TableCell>
+          <TableCell>{menu.hidden ? '是' : '否'}</TableCell>
+          <TableCell>{menu.keepAlive ? '是' : '否'}</TableCell>
+          <TableCell>{menu.externalLink ? '是' : '否'}</TableCell>
+          <TableCell>{menu.permissionCode}</TableCell>
+          <TableCell>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm"><Ellipsis /></Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem onClick={() => handleEditClick(menu)}>
+                  编辑
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem variant="destructive" onClick={() => handleDeleteClick(menu.id!)}>
+                  删除
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </TableCell>
+        </TableRow>,
+      )
+
+      // Render children if expanded
+      if (hasChildren && isExpanded) {
+        rows.push(...renderMenuRows(menu.children, level + 1))
+      }
+    })
+
+    return rows
+  }
+
   if (isLoading)
     return <div>Loading menus...</div>
   if (isError)
@@ -183,7 +293,6 @@ function RouteComponent() {
       <Table className="mt-4">
         <TableHeader>
           <TableRow>
-            <TableHead>ID</TableHead>
             <TableHead>标题</TableHead>
             <TableHead>路径</TableHead>
             <TableHead>图标</TableHead>
@@ -193,28 +302,10 @@ function RouteComponent() {
             <TableHead>保持活跃</TableHead>
             <TableHead>外部链接</TableHead>
             <TableHead>权限码</TableHead>
-            <TableHead>操作</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {menus?.map(menu => (
-            <TableRow key={menu.id}>
-              <TableCell>{menu.id}</TableCell>
-              <TableCell>{menu.title}</TableCell>
-              <TableCell>{menu.path}</TableCell>
-              <TableCell>{menu.icon}</TableCell>
-              <TableCell>{menu.parentId ?? '无'}</TableCell>
-              <TableCell>{menu.sort}</TableCell>
-              <TableCell>{menu.hidden ? '是' : '否'}</TableCell>
-              <TableCell>{menu.keepAlive ? '是' : '否'}</TableCell>
-              <TableCell>{menu.externalLink ? '是' : '否'}</TableCell>
-              <TableCell>{menu.permissionCode}</TableCell>
-              <TableCell>
-                <Button variant="ghost" size="sm" onClick={() => handleEditClick(menu)}>编辑</Button>
-                <Button variant="ghost" size="sm" onClick={() => handleDeleteClick(menu.id!)}>删除</Button>
-              </TableCell>
-            </TableRow>
-          ))}
+          {menus && renderMenuRows(organizeMenuHierarchy(menus))}
         </TableBody>
       </Table>
     </div>

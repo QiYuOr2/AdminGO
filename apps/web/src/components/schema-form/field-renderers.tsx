@@ -4,6 +4,7 @@ import type { FieldConfig, FieldType } from './types'
 import {
   Input,
   RadioGroup,
+  RadioGroupItem,
   Select,
   SelectContent,
   SelectItem,
@@ -12,6 +13,7 @@ import {
   Switch,
   Textarea,
 } from '@ago/ui'
+import { Label } from '@ago/ui/basic/label.tsx'
 
 export type FieldRender = (field: ControllerRenderProps<FieldValues, string>, config: FieldConfig) => JSX.Element
 export type FieldRenderMap = Record<FieldType, FieldRender>
@@ -92,11 +94,27 @@ export const RadioInput: FieldRender = (field, config) => {
 
   return (
     <RadioGroup
-      options={config.options}
       value={field.value}
       onValueChange={field.onChange}
       disabled={config.disabled}
-    />
+      className="flex flex-col space-y-2"
+    >
+      {config.options.map(option => (
+        <div key={option.value} className="flex items-center space-x-2">
+          <RadioGroupItem
+            value={option.value}
+            id={`${field.name}-${option.value}`}
+            disabled={option.disabled}
+          />
+          <Label
+            htmlFor={`${field.name}-${option.value}`}
+            className="text-sm font-normal cursor-pointer"
+          >
+            {option.label}
+          </Label>
+        </div>
+      ))}
+    </RadioGroup>
   )
 }
 

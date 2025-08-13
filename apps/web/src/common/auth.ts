@@ -26,6 +26,7 @@ export const auth: Auth = {
     if (!localStorage.getItem(AUTH_USERNAME_KEY)) {
       return
     }
+    auth.status = 'loggedIn'
     auth.userId = Number(localStorage.getItem(AUTH_USER_ID_KEY))
     auth.username = localStorage.getItem(AUTH_USERNAME_KEY) || undefined
   },
