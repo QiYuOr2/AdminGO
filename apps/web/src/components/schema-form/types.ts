@@ -1,4 +1,12 @@
-export type FieldType = 'text' | 'number' | 'email' | 'select' | 'checkbox'
+import type { z } from 'zod'
+
+export type FieldType = 'text' | 'number' | 'email' | 'select' | 'checkbox' | 'textarea' | 'radio' | 'date' | 'file' | 'password'
+
+export interface FieldOption<T = any> {
+  label: string
+  value: T
+  disabled?: boolean
+}
 
 export interface FieldConfig<ValueType = any> {
   name: string
@@ -6,18 +14,43 @@ export interface FieldConfig<ValueType = any> {
   type: FieldType
   defaultValue?: ValueType
   required?: boolean
+  disabled?: boolean
+  placeholder?: string
+  description?: string
+
+  // Validation rules
   minLength?: number
   maxLength?: number
   min?: number
   max?: number
   pattern?: RegExp
-  options?: Array<{ label: string, value: ValueType }>
-  placeholder?: string
+  validation?: z.ZodTypeAny
+
+  // Field-specific options
+  options?: Array<FieldOption<ValueType>>
+  multiple?: boolean
+  accept?: string // for file inputs
+  rows?: number // for textarea
+
+  // Conditional rendering
+  dependsOn?: string
+  showWhen?: (formValues: Record<string, any>) => boolean
 }
 
-export interface FormConfig {
+export interface FormConfig<V extends z.ZodType> {
   fields: FieldConfig[]
-  endpoint: string
-  method?: 'POST' | 'PUT' | 'PATCH'
+  endpoint?: string
+  method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
   headers?: Record<string, string>
+  onSubmit?: (data: Record<string, any>) => void | Promise<void>
+  onError?: (error: any) => void
+  resetOnSubmit?: boolean
+  validationSchema?: V
+}
+
+export interface FormState {
+  isLoading: boolean
+  isSubmitting: boolean
+  errors: Record<string, string>
+  touched: Record<string, boolean>
 }

@@ -1,21 +1,85 @@
 import type { MenuDTO } from '~/api/menu'
+import type { FormConfig } from '~/components/schema-form/types'
 import { Button } from '@ago/ui/basic/button.tsx'
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@ago/ui/basic/dialog.tsx'
-import { Input } from '@ago/ui/basic/input.tsx'
-import { Label } from '@ago/ui/basic/label.tsx'
-import { Switch } from '@ago/ui/basic/switch.tsx'
+import { DialogTrigger } from '@ago/ui/basic/dialog.tsx'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@ago/ui/basic/table.tsx'
-import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 import { useState } from 'react'
-import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { createMenu, deleteMenu, fetchMenus, MenuSchema, updateMenu } from '~/api/menu'
+import { FormDialog } from '../-components/form-dialog'
 
 export const Route = createFileRoute('/dashboard/settings/menu')({
   component: RouteComponent,
 })
+
+const menuFormConfig: FormConfig<typeof MenuSchema> = {
+  fields: [
+    {
+      name: 'title',
+      label: '标题',
+      type: 'text',
+      required: true,
+      placeholder: '请输入菜单标题',
+    },
+    {
+      name: 'path',
+      label: '路径',
+      type: 'text',
+      required: true,
+      placeholder: '请输入菜单路径',
+    },
+    {
+      name: 'icon',
+      label: '图标',
+      type: 'text',
+      placeholder: '请输入图标名称',
+    },
+    {
+      name: 'parentId',
+      label: '父级ID',
+      type: 'number',
+      placeholder: '请输入父级菜单ID',
+    },
+    {
+      name: 'sort',
+      label: '排序',
+      type: 'number',
+      defaultValue: 0,
+      placeholder: '请输入排序值',
+    },
+    {
+      name: 'permissionCode',
+      label: '权限码',
+      type: 'text',
+      placeholder: '请输入权限码',
+    },
+    {
+      name: 'hidden',
+      label: '隐藏',
+      type: 'checkbox',
+      defaultValue: false,
+      description: '是否在菜单中隐藏此项',
+    },
+    {
+      name: 'keepAlive',
+      label: '保持活跃',
+      type: 'checkbox',
+      defaultValue: true,
+      description: '页面是否保持缓存状态',
+    },
+    {
+      name: 'externalLink',
+      label: '外部链接',
+      type: 'checkbox',
+      defaultValue: false,
+      description: '是否为外部链接',
+    },
+  ],
+  validationSchema: MenuSchema,
+  resetOnSubmit: true,
+}
 
 function RouteComponent() {
   const queryClient = useQueryClient()
@@ -27,21 +91,6 @@ function RouteComponent() {
     queryFn: async () => {
       const response = await fetchMenus()
       return response.data
-    },
-  })
-
-  const form = useForm<MenuDTO>({
-    resolver: zodResolver(MenuSchema),
-    defaultValues: {
-      parentId: null,
-      title: '',
-      path: '',
-      icon: '',
-      hidden: false,
-      keepAlive: true,
-      externalLink: false,
-      sort: 0,
-      permissionCode: '',
     },
   })
 
@@ -83,18 +132,20 @@ function RouteComponent() {
     },
   })
 
-  const onSubmit = (data: MenuDTO) => {
-    if (editingMenu) {
-      updateMutation.mutate({ id: editingMenu.id!, menu: data })
-    }
-    else {
-      createMutation.mutate(data)
-    }
+  const formConfig: FormConfig<typeof MenuSchema> = {
+    ...menuFormConfig,
+    onSubmit: async (data: Record<string, any>) => {
+      if (editingMenu) {
+        updateMutation.mutate({ id: editingMenu.id!, menu: data as MenuDTO })
+      }
+      else {
+        createMutation.mutate(data as MenuDTO)
+      }
+    },
   }
 
   const handleEditClick = (menu: MenuDTO) => {
     setEditingMenu(menu)
-    form.reset(menu)
     setIsDialogOpen(true)
   }
 
@@ -106,7 +157,6 @@ function RouteComponent() {
 
   const handleAddClick = () => {
     setEditingMenu(null)
-    form.reset()
     setIsDialogOpen(true)
   }
 
@@ -118,57 +168,17 @@ function RouteComponent() {
   return (
     <div className="p-4">
       <h1 className="text-2xl font-bold mb-4">菜单管理</h1>
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+      <FormDialog
+        open={isDialogOpen}
+        onOpenChange={setIsDialogOpen}
+        title={editingMenu ? '编辑菜单' : '新增菜单'}
+        config={formConfig}
+        initialValues={editingMenu || undefined}
+      >
         <DialogTrigger asChild>
           <Button onClick={handleAddClick}>新增菜单</Button>
         </DialogTrigger>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>{editingMenu ? '编辑菜单' : '新增菜单'}</DialogTitle>
-          </DialogHeader>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="title" className="text-right">标题</Label>
-              <Input id="title" {...form.register('title')} className="col-span-3" />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="path" className="text-right">路径</Label>
-              <Input id="path" {...form.register('path')} className="col-span-3" />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="icon" className="text-right">图标</Label>
-              <Input id="icon" {...form.register('icon')} className="col-span-3" />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="parentId" className="text-right">父级ID</Label>
-              <Input id="parentId" type="number" {...form.register('parentId', { valueAsNumber: true })} className="col-span-3" />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="sort" className="text-right">排序</Label>
-              <Input id="sort" type="number" {...form.register('sort', { valueAsNumber: true })} className="col-span-3" />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="permissionCode" className="text-right">权限码</Label>
-              <Input id="permissionCode" {...form.register('permissionCode')} className="col-span-3" />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="hidden" className="text-right">隐藏</Label>
-              <Switch id="hidden" checked={form.watch('hidden')} onCheckedChange={checked => form.setValue('hidden', checked)} className="col-span-3" />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="keepAlive" className="text-right">保持活跃</Label>
-              <Switch id="keepAlive" checked={form.watch('keepAlive')} onCheckedChange={checked => form.setValue('keepAlive', checked)} className="col-span-3" />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="externalLink" className="text-right">外部链接</Label>
-              <Switch id="externalLink" checked={form.watch('externalLink')} onCheckedChange={checked => form.setValue('externalLink', checked)} className="col-span-3" />
-            </div>
-            <DialogFooter>
-              <Button type="submit">保存</Button>
-            </DialogFooter>
-          </form>
-        </DialogContent>
-      </Dialog>
+      </FormDialog>
 
       <Table className="mt-4">
         <TableHeader>

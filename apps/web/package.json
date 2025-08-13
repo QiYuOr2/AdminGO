@@ -19,6 +19,7 @@
     "@radix-ui/react-dialog": "catalog:styles",
     "@radix-ui/react-dropdown-menu": "catalog:styles",
     "@radix-ui/react-label": "catalog:styles",
+    "@radix-ui/react-radio-group": "catalog:styles",
     "@radix-ui/react-select": "catalog:styles",
     "@radix-ui/react-separator": "catalog:styles",
     "@radix-ui/react-slot": "catalog:styles",

@@ -1,84 +1,103 @@
-import type { ComponentProps, JSX } from 'react'
-import type { ControllerRenderProps, FieldValues } from 'react-hook-form'
-import type { FieldConfig, FieldType, FormConfig } from './types'
-import { Input, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@ago/ui'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@ago/ui/basic/form.tsx'
-import { useForm } from 'react-hook-form'
+import type { ComponentProps } from 'react'
+import type { FieldValues } from 'react-hook-form'
+import type z from 'zod'
+import type { FieldConfig, FormConfig, FormState } from './types'
+import { Button } from '@ago/ui'
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@ago/ui/basic/form.tsx'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useCallback } from 'react'
+import { useForm, useWatch } from 'react-hook-form'
+import { fieldRenderMap } from './field-renderers'
+import { useFormState, useFormSubmission } from './hooks'
+import { shouldShowField, useDefaultValues, useValidationSchema } from './validation'
 
-interface SchemaFormProps extends ComponentProps<'form'> {
-  config: FormConfig
+interface SchemaFormProps<T extends z.ZodType> extends ComponentProps<'form'> {
+  config: FormConfig<T>
+  initialValues?: Record<string, any>
+  onFormStateChange?: (state: FormState) => void
 }
 
-type FieldRender = (field: ControllerRenderProps<FieldValues, string>, config?: FieldConfig) => JSX.Element
-type InputRender = (type: FieldType) => FieldRender
-type FieldRenderMap = Record<FieldType, FieldRender>
+export function SchemaForm<T extends z.ZodType>(props: SchemaFormProps<T>) {
+  const { config, initialValues, onFormStateChange, ...formProps } = props
 
-export function SchemaForm(props: SchemaFormProps) {
-  const { fields } = props.config
+  const validationSchema = useValidationSchema(config)
+  const defaultValues = useDefaultValues(config.fields, initialValues)
+  const { formState, updateFormState } = useFormState(onFormStateChange)
 
-  const form = useForm({})
+  const form = useForm<FieldValues>({
+    resolver: zodResolver(validationSchema as z.ZodAny),
+    defaultValues,
+    mode: 'onChange',
+  })
 
-  const InputField: InputRender = (type) => {
-    return field => (
-      <>
-        <Input {...field} type={type} />
-      </>
-    )
+  const { handleSubmit: handleFormSubmit } = useFormSubmission(config, updateFormState, form)
+
+  const watchedValues = useWatch({ control: form.control })
+
+  const isFieldVisible = useCallback((fieldConfig: FieldConfig) => {
+    return shouldShowField(fieldConfig, watchedValues)
+  }, [watchedValues])
+
+  const handleReset = () => {
+    form.reset()
+    updateFormState({ errors: {}, touched: {} })
   }
-
-  const SelectField: FieldRender = (field, config) => {
-    if (!config?.options) {
-      return (
-        <div className="text-red-500">
-          <span>配置缺失：</span>
-          <pre><code>config.options</code></pre>
-        </div>
-      )
-    }
-
-    return (
-      <Select onValueChange={field.onChange} defaultValue={field.value}>
-        <SelectTrigger>
-          <SelectValue placeholder={config?.placeholder} />
-        </SelectTrigger>
-        <SelectContent>
-          {config.options.map(option => (
-            <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-    )
-  }
-
-  const fieldRenderMap: FieldRenderMap = {
-    text: InputField('text'),
-    checkbox: InputField('checkbox'),
-    number: InputField('number'),
-    email: InputField('email'),
-    select: SelectField,
-  }
-
-  const onSubmit = () => {}
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
-        {fields.map(config => (
-          <FormField
-            control={form.control}
-            key={config.name}
-            name={config.name}
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{config.label}</FormLabel>
-                <FormControl>
-                  {fieldRenderMap[config.type](field, config)}
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        ))}
+      <form onSubmit={form.handleSubmit(handleFormSubmit)} {...formProps}>
+        <div className="space-y-6">
+          {config.fields
+            .filter(isFieldVisible)
+            .map(fieldConfig => (
+              <FormField
+                control={form.control}
+                key={fieldConfig.name}
+                name={fieldConfig.name}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      {fieldConfig.label}
+                      {fieldConfig.required && <span className="text-destructive ml-1">*</span>}
+                    </FormLabel>
+                    <FormControl>
+                      {fieldRenderMap[fieldConfig.type](field, { ...fieldConfig, disabled: fieldConfig.disabled || formState.isSubmitting })}
+                    </FormControl>
+                    {fieldConfig.description && (
+                      <FormDescription>{fieldConfig.description}</FormDescription>
+                    )}
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            ))}
+
+          <div className="flex gap-4">
+            <Button
+              type="submit"
+              disabled={formState.isSubmitting}
+              className="min-w-[100px]"
+            >
+              {formState.isSubmitting ? '提交中...' : '提交'}
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handleReset}
+              disabled={formState.isSubmitting}
+            >
+              重置
+            </Button>
+          </div>
+        </div>
       </form>
     </Form>
   )
