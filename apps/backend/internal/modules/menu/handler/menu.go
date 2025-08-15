@@ -61,7 +61,7 @@ func (h *MenuHandler) CreateMenu(c *gin.Context) {
 
 	menu := dto.FromDTOToModel(menuDTO)
 	if err := h.service.CreateMenu(&menu); err != nil {
-		h.responder.ErrorWithMessage(c, "Failed to create menu")
+		h.responder.ErrorWithMessage(c, err.Error())
 		return
 	}
 

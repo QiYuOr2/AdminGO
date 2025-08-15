@@ -6,6 +6,7 @@ import (
 	rbacModel "admingo/internal/modules/rbac/model"
 	rbacService "admingo/internal/modules/rbac/service"
 	"admingo/pkg/crud"
+	"fmt"
 )
 
 type MenuService struct {
@@ -75,16 +76,23 @@ func (s *MenuService) FindByUserID(userID uint) ([]model.Menu, error) {
 }
 
 func (s *MenuService) CreateMenu(menu *model.Menu) error {
-	if menu.PermissionCode != "" {
-		_, err := s.rbac.CreatePermission(menu.PermissionCode, menu.Path)
-		if err != nil {
-			return err
-		}
-		err = s.rbac.AssignPermissionToRole("Admin", menu.PermissionCode)
-		if err != nil {
-			return err
-		}
+	// 如果没有提供权限码，报错
+	if menu.PermissionCode == "" {
+		return fmt.Errorf("permission code is required")
 	}
+	
+	// 创建权限
+	_, err := s.rbac.CreatePermission(menu.PermissionCode, menu.Path)
+	if err != nil {
+		return err
+	}
+	
+	// 将权限绑定到Admin角色
+	err = s.rbac.AssignPermissionToRole("Admin", menu.PermissionCode)
+	if err != nil {
+		return err
+	}
+	
 	return s.repo.Create(menu)
 }
 

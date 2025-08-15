@@ -15,7 +15,7 @@ export function buildSidebarMenu(basic: string, menus: MenuDTO[], currentPath?: 
     if (currentPath && m.path === currentPath) {
       activeIds.push(m.id)
     }
-    if (m.parentId !== null) {
+    if (m.parentId) {
       if (activeIds.includes(m.id)) {
         activeIds.push(m.parentId)
       }

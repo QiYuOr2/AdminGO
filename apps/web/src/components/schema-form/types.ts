@@ -8,6 +8,13 @@ export interface FieldOption<T = any> {
   disabled?: boolean
 }
 
+export interface FieldSyncRule {
+  type: 'transform' | 'copy' | 'generate'
+  sourceField: string
+  transform?: (sourceValue: any, allValues: Record<string, any>) => any
+  condition?: (sourceValue: any, allValues: Record<string, any>) => boolean
+}
+
 export interface FieldConfig<ValueType = any> {
   name: string
   label: string
@@ -35,6 +42,9 @@ export interface FieldConfig<ValueType = any> {
   // Conditional rendering
   dependsOn?: string
   showWhen?: (formValues: Record<string, any>) => boolean
+
+  // Field synchronization
+  syncWith?: FieldSyncRule[]
 }
 
 export interface FormConfig<V extends z.ZodType> {

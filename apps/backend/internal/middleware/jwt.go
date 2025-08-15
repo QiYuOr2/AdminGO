@@ -12,14 +12,14 @@ func JWT(jwt *jwt.JWT) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		authHeader := c.GetHeader("Authorization")
 		if authHeader == "" {
-			response.ErrorWithMessage(c, "Authorization header is missing")
+			response.UnAuth(c, "Authorization header is missing")
 			c.Abort()
 			return
 		}
 
 		parts := strings.Split(authHeader, " ")
 		if len(parts) != 2 || parts[0] != "Bearer" {
-			response.ErrorWithMessage(c, "Invalid Authorization header format")
+			response.UnAuth(c, "Invalid Authorization header format")
 			c.Abort()
 			return
 		}
@@ -27,7 +27,7 @@ func JWT(jwt *jwt.JWT) gin.HandlerFunc {
 		tokenString := parts[1]
 		claims, err := jwt.ValidateToken(tokenString)
 		if err != nil {
-			response.ErrorWithMessage(c, "Invalid token")
+			response.UnAuth(c, "Invalid token")
 			c.Abort()
 			return
 		}

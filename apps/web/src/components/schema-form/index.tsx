@@ -16,6 +16,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useCallback } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 import { fieldRenderMap } from './field-renderers'
+import { useFieldSync } from './field-sync'
 import { useFormState, useFormSubmission } from './hooks'
 import { shouldShowField, useDefaultValues, useValidationSchema } from './validation'
 
@@ -41,6 +42,9 @@ export function SchemaForm<T extends z.ZodType>(props: SchemaFormProps<T>) {
   const { handleSubmit: handleFormSubmit } = useFormSubmission(config, updateFormState, form)
 
   const watchedValues = useWatch({ control: form.control })
+
+  // 字段同步功能
+  useFieldSync(form, config.fields, watchedValues)
 
   const isFieldVisible = useCallback((fieldConfig: FieldConfig) => {
     return shouldShowField(fieldConfig, watchedValues)

@@ -56,3 +56,7 @@ func Error(c *gin.Context, err error) {
 func ErrorWithMessage(c *gin.Context, message string) {
 	Result[any](c, int(ecode.Error_ServerError), message, nil)
 }
+
+func UnAuth(c *gin.Context, message string) {
+	Result[any](c, int(ecode.Error_UnAuth), message, nil)
+}

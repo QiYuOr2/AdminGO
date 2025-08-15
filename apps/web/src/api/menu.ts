@@ -11,10 +11,11 @@ export const MenuSchema = z.object({
   keepAlive: z.boolean().optional(),
   externalLink: z.boolean().optional(),
   sort: z.number().optional(),
-  permissionCode: z.string().optional(),
+  permissionCode: z.string(),
 })
 
 export type MenuDTO = z.infer<typeof MenuSchema>
+export const MenuSubmitSchema = MenuSchema.omit({ id: true })
 
 export async function fetchMenus() {
   return apiClient<MenuDTO[]>('/sys/menu/list')

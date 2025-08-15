@@ -21,6 +21,7 @@ export interface ApiClientResponse<T> {
   code: number
   data: T
   message: string
+  isOk: boolean
 }
 
 const BASE_URL = import.meta.env.VITE_API_BASIC_URL
@@ -79,10 +80,14 @@ export async function apiClient<T = any>(endpoint: string, options: ApiClientOpt
 
   const result = await response.json()
 
-  if (result.code === 10001) {
+  if (String(result.code).slice(0, 1) === '3') {
     localStorage.removeItem(AUTH_TOKEN_KEY)
     localStorage.removeItem(AUTH_USER_ID_KEY)
     localStorage.removeItem(AUTH_USERNAME_KEY)
+  }
+
+  if (result.code !== 0) {
+    throw result
   }
 
   return result

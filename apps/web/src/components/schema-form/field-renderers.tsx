@@ -21,6 +21,7 @@ export type FieldRenderMap = Record<FieldType, FieldRender>
 export const TextInput: FieldRender = (field, config) => (
   <Input
     {...field}
+    value={field.value ?? ''}
     type={config.type === 'password' ? 'password' : 'text'}
     placeholder={config.placeholder}
     disabled={config.disabled}
@@ -30,18 +31,20 @@ export const TextInput: FieldRender = (field, config) => (
 export const NumberInput: FieldRender = (field, config) => (
   <Input
     {...field}
+    value={field.value ?? ''}
     type="number"
     placeholder={config.placeholder}
     min={config.min}
     max={config.max}
     disabled={config.disabled}
-    onChange={e => field.onChange(Number(e.target.value))}
+    onChange={e => field.onChange(e.target.value === '' ? undefined : Number(e.target.value))}
   />
 )
 
 export const TextareaInput: FieldRender = (field, config) => (
   <Textarea
     {...field}
+    value={field.value ?? ''}
     placeholder={config.placeholder}
     rows={config.rows || 3}
     disabled={config.disabled}
@@ -61,7 +64,7 @@ export const SelectInput: FieldRender = (field, config) => {
   return (
     <Select
       onValueChange={field.onChange}
-      value={field.value}
+      value={field.value ?? ''}
       disabled={config.disabled}
     >
       <SelectTrigger>
@@ -94,7 +97,7 @@ export const RadioInput: FieldRender = (field, config) => {
 
   return (
     <RadioGroup
-      value={field.value}
+      value={field.value ?? ''}
       onValueChange={field.onChange}
       disabled={config.disabled}
       className="flex flex-col space-y-2"
@@ -120,7 +123,7 @@ export const RadioInput: FieldRender = (field, config) => {
 
 export const CheckboxInput: FieldRender = (field, config) => (
   <Switch
-    checked={field.value}
+    checked={field.value ?? false}
     onCheckedChange={field.onChange}
     disabled={config.disabled}
   />

@@ -9,14 +9,15 @@ import { createFileRoute } from '@tanstack/react-router'
 import { ChevronDown, ChevronRight, Ellipsis } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'sonner'
-import { createMenu, deleteMenu, fetchMenus, MenuSchema, updateMenu } from '~/api/menu'
+import { createMenu, deleteMenu, fetchMenus, MenuSubmitSchema, updateMenu } from '~/api/menu'
+import { syncFunctions } from '~/components/schema-form/field-sync'
 import { FormDialog } from '../-components/form-dialog'
 
 export const Route = createFileRoute('/dashboard/settings/menu')({
   component: RouteComponent,
 })
 
-const menuFormConfig: FormConfig<typeof MenuSchema> = {
+const menuFormConfig: FormConfig<typeof MenuSubmitSchema> = {
   fields: [
     {
       name: 'title',
@@ -55,7 +56,18 @@ const menuFormConfig: FormConfig<typeof MenuSchema> = {
       name: 'permissionCode',
       label: '权限码',
       type: 'text',
-      placeholder: '请输入权限码',
+      placeholder: '将根据路径自动生成',
+      description: '权限码会根据菜单路径自动生成，也可以手动修改',
+      syncWith: [
+        {
+          type: 'transform',
+          sourceField: 'path',
+          transform: (pathValue: string) => {
+            return syncFunctions.pathToPermissionCode(pathValue)
+          },
+          condition: (pathValue: string) => Boolean(pathValue && pathValue.trim()),
+        },
+      ],
     },
     {
       name: 'hidden',
@@ -79,7 +91,7 @@ const menuFormConfig: FormConfig<typeof MenuSchema> = {
       description: '是否为外部链接',
     },
   ],
-  validationSchema: MenuSchema,
+  validationSchema: MenuSubmitSchema,
   resetOnSubmit: true,
 }
 
@@ -90,7 +102,7 @@ function RouteComponent() {
   const [expandedNodes, setExpandedNodes] = useState<Set<number>>(new Set())
 
   const { data: menus, isLoading, isError } = useQuery<MenuDTO[]>({
-    queryKey: ['menus'],
+    queryKey: ['settings-menus'],
     queryFn: async () => {
       const response = await fetchMenus()
       return response.data
@@ -100,20 +112,20 @@ function RouteComponent() {
   const createMutation = useMutation({
     mutationFn: createMenu,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['menus'] })
+      queryClient.invalidateQueries({ queryKey: ['settings-menus', 'menus'] })
       setIsDialogOpen(false)
       toast('菜单创建成功')
     },
     onError: (error) => {
       console.error('Error create menu:', error)
-      toast('菜单创建失败')
+      toast.error('菜单创建失败')
     },
   })
 
   const updateMutation = useMutation({
     mutationFn: (data: { id: number, menu: MenuDTO }) => updateMenu(data.id, data.menu),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['menus'] })
+      queryClient.invalidateQueries({ queryKey: ['settings-menus', 'menus'] })
       setIsDialogOpen(false)
       toast('菜单更新成功')
     },
@@ -126,7 +138,7 @@ function RouteComponent() {
   const deleteMutation = useMutation({
     mutationFn: deleteMenu,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['menus'] })
+      queryClient.invalidateQueries({ queryKey: ['settings-menus', 'menus'] })
       toast('菜单删除成功')
     },
     onError: (error) => {
@@ -135,7 +147,7 @@ function RouteComponent() {
     },
   })
 
-  const formConfig: FormConfig<typeof MenuSchema> = {
+  const formConfig: FormConfig<typeof MenuSubmitSchema> = {
     ...menuFormConfig,
     onSubmit: async (data: Record<string, any>) => {
       if (editingMenu) {
@@ -236,7 +248,6 @@ function RouteComponent() {
           </TableCell>
           <TableCell>{menu.path}</TableCell>
           <TableCell>{menu.icon}</TableCell>
-          <TableCell>{menu.parentId ?? '无'}</TableCell>
           <TableCell>{menu.sort}</TableCell>
           <TableCell>{menu.hidden ? '是' : '否'}</TableCell>
           <TableCell>{menu.keepAlive ? '是' : '否'}</TableCell>
@@ -296,7 +307,6 @@ function RouteComponent() {
             <TableHead>标题</TableHead>
             <TableHead>路径</TableHead>
             <TableHead>图标</TableHead>
-            <TableHead>父级ID</TableHead>
             <TableHead>排序</TableHead>
             <TableHead>隐藏</TableHead>
             <TableHead>保持活跃</TableHead>
