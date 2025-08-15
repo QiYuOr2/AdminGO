@@ -1,3 +1,4 @@
+export * from './components/basic/alert-dialog'
 export * from './components/basic/button'
 export * from './components/basic/card'
 export * from './components/basic/input'

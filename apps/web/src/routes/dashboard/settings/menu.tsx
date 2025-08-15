@@ -97,7 +97,7 @@ const menuFormConfig: FormConfig<typeof MenuSubmitSchema> = {
 
 function RouteComponent() {
   const queryClient = useQueryClient()
-  const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [isFormDialogOpen, setIsFormDialogOpen] = useState(false)
   const [editingMenu, setEditingMenu] = useState<MenuDTO | null>(null)
   const [expandedNodes, setExpandedNodes] = useState<Set<number>>(new Set())
 
@@ -112,8 +112,9 @@ function RouteComponent() {
   const createMutation = useMutation({
     mutationFn: createMenu,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['settings-menus', 'menus'] })
-      setIsDialogOpen(false)
+      queryClient.invalidateQueries({ queryKey: ['settings-menus'] })
+      queryClient.invalidateQueries({ queryKey: ['menus'] })
+      setIsFormDialogOpen(false)
       toast('菜单创建成功')
     },
     onError: (error) => {
@@ -125,8 +126,9 @@ function RouteComponent() {
   const updateMutation = useMutation({
     mutationFn: (data: { id: number, menu: MenuDTO }) => updateMenu(data.id, data.menu),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['settings-menus', 'menus'] })
-      setIsDialogOpen(false)
+      queryClient.invalidateQueries({ queryKey: ['settings-menus'] })
+      queryClient.invalidateQueries({ queryKey: ['menus'] })
+      setIsFormDialogOpen(false)
       toast('菜单更新成功')
     },
     onError: (error) => {
@@ -138,7 +140,8 @@ function RouteComponent() {
   const deleteMutation = useMutation({
     mutationFn: deleteMenu,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['settings-menus', 'menus'] })
+      queryClient.invalidateQueries({ queryKey: ['settings-menus'] })
+      queryClient.invalidateQueries({ queryKey: ['menus'] })
       toast('菜单删除成功')
     },
     onError: (error) => {
@@ -161,7 +164,7 @@ function RouteComponent() {
 
   const handleEditClick = (menu: MenuDTO) => {
     setEditingMenu(menu)
-    setIsDialogOpen(true)
+    setIsFormDialogOpen(true)
   }
 
   const handleDeleteClick = (id: number) => {
@@ -172,7 +175,7 @@ function RouteComponent() {
 
   const handleAddClick = () => {
     setEditingMenu(null)
-    setIsDialogOpen(true)
+    setIsFormDialogOpen(true)
   }
 
   const toggleNode = (menuId: number) => {
@@ -288,10 +291,9 @@ function RouteComponent() {
 
   return (
     <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">菜单管理</h1>
       <FormDialog
-        open={isDialogOpen}
-        onOpenChange={setIsDialogOpen}
+        open={isFormDialogOpen}
+        onOpenChange={setIsFormDialogOpen}
         title={editingMenu ? '编辑菜单' : '新增菜单'}
         config={formConfig}
         initialValues={editingMenu || undefined}
@@ -304,7 +306,7 @@ function RouteComponent() {
       <Table className="mt-4">
         <TableHeader>
           <TableRow>
-            <TableHead>标题</TableHead>
+            <TableHead>菜单</TableHead>
             <TableHead>路径</TableHead>
             <TableHead>图标</TableHead>
             <TableHead>排序</TableHead>
@@ -312,6 +314,7 @@ function RouteComponent() {
             <TableHead>保持活跃</TableHead>
             <TableHead>外部链接</TableHead>
             <TableHead>权限码</TableHead>
+            <TableHead></TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>

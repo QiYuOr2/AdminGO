@@ -7,6 +7,7 @@
     "./utils": "./lib/utils.ts"
   },
   "peerDependencies": {
+    "@radix-ui/react-alert-dialog": "catalog:styles",
     "@radix-ui/react-avatar": "catalog:styles",
     "@radix-ui/react-collapsible": "catalog:styles",
     "@radix-ui/react-dialog": "catalog:styles",
