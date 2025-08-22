@@ -1,7 +1,7 @@
 import { cwd } from 'node:process'
-import tailwindcss from '@tailwindcss/vite'
 import { tanstackRouter } from '@tanstack/router-plugin/vite'
 import react from '@vitejs/plugin-react'
+import UnoCSS from 'unocss/vite'
 import { defineConfig, loadEnv } from 'vite'
 
 const env = loadEnv('', cwd())
@@ -11,7 +11,7 @@ export default defineConfig({
   plugins: [
     tanstackRouter({ target: 'react', autoCodeSplitting: true }),
     react(),
-    tailwindcss(),
+    UnoCSS(),
   ],
   resolve: {
     alias: {

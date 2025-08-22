@@ -1,16 +1,24 @@
-import type { NavMainItem } from '@ago/ui/nav-main.tsx'
+import type { MenuItemType } from 'antd/es/menu/interface'
 import type { MenuDTO } from '~/api/menu'
-import { Command } from 'lucide-react'
 
 function sortById(a: { id: number }, b: { id: number }): number {
   return a.id - b.id
 }
 
-export function buildSidebarMenu(basic: string, menus: MenuDTO[], currentPath?: string): NavMainItem[] {
+export interface MenuItem extends MenuItemType {
+  key: string
+  label: string
+  icon: string
+  url?: string
+  isActive?: boolean
+  children?: MenuItem[]
+}
+export function buildMenu(basic: string, menus: MenuDTO[], currentPath?: string) {
   const rootMenus = menus.filter(m => m.parentId === null)
   const childrenMap = new Map<number, MenuDTO[]>()
 
   const activeIds: number[] = []
+
   for (const m of menus) {
     if (currentPath && m.path === currentPath) {
       activeIds.push(m.id)
@@ -26,21 +34,19 @@ export function buildSidebarMenu(basic: string, menus: MenuDTO[], currentPath?: 
     }
   }
 
-  return rootMenus.map((root) => {
+  const mapToMenuItem = (menu: MenuDTO): MenuItem => {
+    const children = childrenMap.get(menu.id)?.sort(sortById).map(mapToMenuItem)
     return {
-      id: root.id,
-      title: root.title,
-      url: `${basic}${root.path}`,
-      icon: Command,
-      isActive: activeIds.includes(root.id),
-      items: childrenMap.get(root.id)?.map(child => ({
-        id: child.id,
-        title: child.title,
-        url: `${basic}${child.path}`,
-        isActive: activeIds.includes(child.id),
-      })).sort(sortById),
+      key: `${menu.id}`, // key 必须是 string
+      label: menu.title,
+      icon: '', // 先占位
+      children: children?.length ? children : undefined,
+      isActive: activeIds.includes(menu.id), // 可选，辅助高亮逻辑
+      url: `${basic}${menu.path}`, // 可选，用于点击跳转
     }
-  }).sort(sortById)
+  }
+
+  return rootMenus.sort(sortById).map(mapToMenuItem)
 }
 
 export interface BreadcrumbItemData {

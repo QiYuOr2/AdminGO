@@ -54,7 +54,7 @@ graph TD
 
 ## 技术选型
 
-- 前端：React、TanStack、Shadcn
+- 前端：React、TanStack、Ant Design
 - 服务端：Gin、MySQL
 - 文档搭建：  fumadocs（暂定
 

@@ -4,7 +4,8 @@ export const Route = createFileRoute('/')({
   component: RouteComponent,
   beforeLoad: async ({ context }) => {
     console.warn(context.auth)
-    if (context.auth.userId) {
+    if (true) {
+    // if (context.auth.userId) {
       throw redirect({ to: '/dashboard' })
     }
   },

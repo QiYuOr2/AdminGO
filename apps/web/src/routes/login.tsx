@@ -1,7 +1,7 @@
 import type { LoginResponseDTO } from '~/api/auth'
 import { useQueryClient } from '@tanstack/react-query'
 import { createFileRoute, redirect, useRouter } from '@tanstack/react-router'
-import { LoginForm } from '../components/login-form'
+import { LoginForm } from '../components/LoginForm'
 
 export const Route = createFileRoute('/login')({
   beforeLoad: async ({ context }) => {
@@ -25,7 +25,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="bg-muted flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10">
+    <div className="box-border flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10">
       <div className="flex w-full max-w-sm flex-col gap-6">
         <LoginForm onSuccess={onLoginSuccess} />
       </div>
