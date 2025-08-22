@@ -28,14 +28,17 @@
     "react-hook-form": "catalog:utils",
     "react-i18next": "catalog:utils",
     "unocss": "catalog:styles",
+    "unocss-preset-scrollbar": "catalog:styles",
     "zod": "catalog:utils"
   },
   "devDependencies": {
+    "@iconify-json/fluent": "catalog:styles",
     "@iconify/react": "catalog:styles",
     "@tanstack/router-plugin": "catalog:",
     "@types/node": "catalog:types",
     "@types/react": "catalog:types",
     "@types/react-dom": "catalog:types",
+    "@unocss/preset-icons": "catalog:styles",
     "@vitejs/plugin-react": "catalog:cli",
     "eslint": "catalog:cli",
     "eslint-plugin-react-hooks": "catalog:cli",

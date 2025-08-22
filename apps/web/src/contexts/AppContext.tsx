@@ -1,18 +1,27 @@
 import type { MenuDTO } from '../api/menu'
 import { useQuery } from '@tanstack/react-query'
-import { createContext, useContext, useMemo } from 'react'
+import { createContext, useContext, useMemo, useState } from 'react'
 import { fetchMenus } from '../api/menu'
 
-export interface AppContextValue {
+interface MenuContext {
   menus: MenuDTO[] | undefined
   isMenusLoading: boolean
   isMenusError: boolean
   refetchMenus: () => void
 }
 
+interface GlobalStateContext {
+  collapsed: boolean
+  setCollapsed: (collapsed: boolean) => void
+}
+
+export interface AppContextValue extends MenuContext, GlobalStateContext {}
+
 const AppContext = createContext<AppContextValue | undefined>(undefined)
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
+  const [collapsed, setCollapsed] = useState(false)
+
   const {
     data: menus,
     isLoading: isMenusLoading,
@@ -33,8 +42,11 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       isMenusLoading,
       isMenusError,
       refetchMenus,
+
+      collapsed,
+      setCollapsed,
     }),
-    [menus, isMenusLoading, isMenusError, refetchMenus],
+    [menus, isMenusLoading, isMenusError, refetchMenus, collapsed, setCollapsed],
   )
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>

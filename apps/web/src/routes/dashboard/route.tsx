@@ -1,6 +1,9 @@
-import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
-import { Breadcrumb, Layout, theme } from 'antd'
+import { createFileRoute, Outlet, redirect, useLocation } from '@tanstack/react-router'
+import { Breadcrumb, Divider, Layout, theme } from 'antd'
+import { useMemo } from 'react'
+import { buildBreadcrumbs } from '~/common/utils/menu'
 import { AppSidebar } from '~/components/AppSidebar'
+import { useAppContext } from '~/contexts/AppContext'
 
 export const Route = createFileRoute('/dashboard')({
   beforeLoad: async ({ context }) => {
@@ -15,32 +18,13 @@ function RouteComponent() {
   const {
     token: { colorBgContainer },
   } = theme.useToken()
-  // const { menus } = useAppContext()
-  // const location = useLocation()
-  // const breadcrumbs = useMemo(() => {
-  //   return menus ? buildBreadcrumbs(menus, location.pathname) : []
-  // }, [menus, location.pathname])
+  const { menus, collapsed, setCollapsed } = useAppContext()
+  const location = useLocation()
+  const breadcrumbs = useMemo(() => {
+    return menus ? buildBreadcrumbs(menus, location.pathname) : []
+  }, [menus, location.pathname])
 
-  // const BreadcrumbNav = () => (
-  //   <div></div>
-  //   // <Breadcrumb>
-  //   //   <BreadcrumbList>
-  //   //     {breadcrumbs.map((item, index, array) => (
-  //   //       <div key={item.path} className="flex items-center gap-3">
-  //   //         <BreadcrumbItem className={index < breadcrumbs.length - 1 ? 'hidden md:block' : ''}>
-  //   //           {index < breadcrumbs.length - 1
-  //   //             ? <BreadcrumbLink href={item.path}>{item.title}</BreadcrumbLink>
-  //   //             : <BreadcrumbPage>{item.title}</BreadcrumbPage>}
-  //   //         </BreadcrumbItem>
-  //   //         {
-  //   //           array.length - 1 > index
-  //   //           && <BreadcrumbSeparator className="hidden md:block" />
-  //   //         }
-  //   //       </div>
-  //   //     ))}
-  //   //   </BreadcrumbList>
-  //   // </Breadcrumb>
-  // )
+  const toggleCollpased = () => setCollapsed(!collapsed)
 
   return (
     <Layout className="h-vh">
@@ -51,9 +35,16 @@ function RouteComponent() {
           className="flex items-center px-6 b-l b-l-solid b-l-warmGray-200"
           style={{ background: colorBgContainer }}
         >
-          <Breadcrumb items={[{ title: 'Home' }, { title: 'List' }, { title: 'App' }]} />
+          <div
+            className="cursor-pointer hover:bg-warmGray-100 rounded p-1  transition-colors duration-200"
+            onClick={toggleCollpased}
+          >
+            <div className="i-fluent:panel-left-32-regular text-lg"></div>
+          </div>
+          <Divider type="vertical" className="ml-2 mr-3" />
+          <Breadcrumb items={breadcrumbs} />
         </Layout.Header>
-        <Layout.Content>
+        <Layout.Content className="bg-white">
           <Outlet />
         </Layout.Content>
       </Layout>

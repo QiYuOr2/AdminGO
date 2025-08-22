@@ -1,3 +1,4 @@
+import type { BreadcrumbItemType } from 'antd/es/breadcrumb/Breadcrumb'
 import type { MenuItemType } from 'antd/es/menu/interface'
 import type { MenuDTO } from '~/api/menu'
 
@@ -37,11 +38,11 @@ export function buildMenu(basic: string, menus: MenuDTO[], currentPath?: string)
   const mapToMenuItem = (menu: MenuDTO): MenuItem => {
     const children = childrenMap.get(menu.id)?.sort(sortById).map(mapToMenuItem)
     return {
-      key: `${menu.id}`, // key 必须是 string
+      key: `${menu.id}`,
       label: menu.title,
-      icon: '', // 先占位
+      icon: menu.icon || 'i-fluent:border-none-24-filled',
       children: children?.length ? children : undefined,
-      isActive: activeIds.includes(menu.id), // 可选，辅助高亮逻辑
+      isActive: activeIds.includes(menu.id),
       url: `${basic}${menu.path}`, // 可选，用于点击跳转
     }
   }
@@ -49,13 +50,8 @@ export function buildMenu(basic: string, menus: MenuDTO[], currentPath?: string)
   return rootMenus.sort(sortById).map(mapToMenuItem)
 }
 
-export interface BreadcrumbItemData {
-  title: string
-  path: string
-}
-
-export function buildBreadcrumbs(menus: MenuDTO[], currentPath: string): BreadcrumbItemData[] {
-  const breadcrumbs: BreadcrumbItemData[] = []
+export function buildBreadcrumbs(menus: MenuDTO[], currentPath: string): BreadcrumbItemType[] {
+  const breadcrumbs: BreadcrumbItemType[] = []
   const menuMap = new Map<number, MenuDTO>(menus.map(m => [m.id, m]))
 
   const relativePath = currentPath.replace('/dashboard', '')
@@ -63,7 +59,7 @@ export function buildBreadcrumbs(menus: MenuDTO[], currentPath: string): Breadcr
   let currentMenu = menus.find(m => m.path === relativePath)
 
   while (currentMenu) {
-    breadcrumbs.unshift({ title: currentMenu.title, path: `/dashboard${currentMenu.path}` })
+    breadcrumbs.unshift({ title: currentMenu.title, href: `/dashboard${currentMenu.path}` })
     if (currentMenu.parentId) {
       currentMenu = menuMap.get(currentMenu.parentId)
     }
