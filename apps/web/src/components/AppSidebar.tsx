@@ -23,7 +23,11 @@ export function AppSidebar({ children, ...rest }: ComponentProps<'div'>) {
 
   const navItems = useMemo(() => {
     return menus
-      ? buildMenu(DASHBOARD_PATH, menus, location.pathname.replace(DASHBOARD_PATH, ''))
+      ? buildMenu(
+          DASHBOARD_PATH,
+          menus,
+          location.pathname.replace(DASHBOARD_PATH, ''),
+        )
       : []
   }, [menus, location.pathname])
 
@@ -50,12 +54,23 @@ export function AppSidebar({ children, ...rest }: ComponentProps<'div'>) {
     }
   }
 
+  const selectedMenu = useMemo(() => {
+    return menus?.find(menu => menu.path === location.pathname.replace(DASHBOARD_PATH, ''))
+  }, [location.pathname, menus])
+
+  const openKeys = useMemo(() => {
+    const parentMenu = menus?.find(menu => menu.id === selectedMenu?.parentId)
+    return parentMenu ? [String(parentMenu.id)] : []
+  }, [selectedMenu, menus])
+
   return (
     <Layout.Sider theme="light" {...rest}>
       <div className="my-2 mx-4 bg-warmGray-100 py-4 text-center rounded">AdminGO</div>
       <Menu
         mode="inline"
         items={navItems}
+        defaultSelectedKeys={selectedMenu ? [String(selectedMenu.id)] : []}
+        defaultOpenKeys={openKeys}
         onSelect={handleMenuSelect}
       />
     </Layout.Sider>

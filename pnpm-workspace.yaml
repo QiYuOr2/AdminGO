@@ -4,17 +4,12 @@ packages:
   - docs
 
 catalog:
-  '@ant-design/v5-patch-for-react-19': ^1.0.3
   '@hookform/resolvers': 5.1.1
   '@tanstack/react-query': ^5.83.0
   '@tanstack/react-router': ^1.127.8
   '@tanstack/react-router-devtools': ^1.127.8
   '@tanstack/react-table': ^8.21.3
   '@tanstack/router-plugin': ^1.127.8
-  '@unocss/reset': ^66.4.2
-  antd: ^5.27.1
-  next-themes: ^0.4.6
-  unocss: ^66.4.2
 
 catalogs:
   cli:
@@ -31,12 +26,16 @@ catalogs:
     zx: ^8.7.1
   styles:
     '@iconify/react': ^6.0.0
-
+    '@unocss/reset': ^66.4.2
+    antd: ^5.27.1
+    next-themes: ^0.4.6
+    unocss: ^66.4.2
   types:
     '@types/node': ^24.0.5
     '@types/react': ^19.1.8
     '@types/react-dom': ^19.1.6
   utils:
+    '@ant-design/v5-patch-for-react-19': ^1.0.3
     fs-extra: ^11.3.0
     globals: ^16.2.0
     i18next: ^25.2.1
