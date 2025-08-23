@@ -2,10 +2,6 @@ import type { BreadcrumbItemType } from 'antd/es/breadcrumb/Breadcrumb'
 import type { MenuItemType } from 'antd/es/menu/interface'
 import type { MenuDTO } from '~/api/menu'
 
-function sortById(a: { id: number }, b: { id: number }): number {
-  return a.id - b.id
-}
-
 export interface MenuItem extends MenuItemType {
   key: string
   label: string
@@ -36,7 +32,12 @@ export function buildMenu(basic: string, menus: MenuDTO[], currentPath?: string)
   }
 
   const mapToMenuItem = (menu: MenuDTO): MenuItem => {
-    const children = childrenMap.get(menu.id)?.sort(sortById).map(mapToMenuItem)
+    const children = childrenMap
+      .get(menu.id)
+      ?.sort(sortById)
+      .sort(sortBySort)
+      .map(mapToMenuItem)
+
     return {
       key: `${menu.id}`,
       label: menu.title,
@@ -47,7 +48,10 @@ export function buildMenu(basic: string, menus: MenuDTO[], currentPath?: string)
     }
   }
 
-  return rootMenus.sort(sortById).map(mapToMenuItem)
+  return rootMenus
+    .sort(sortById)
+    .sort(sortBySort)
+    .map(mapToMenuItem)
 }
 
 export function buildBreadcrumbs(menus: MenuDTO[], currentPath: string): BreadcrumbItemType[] {
@@ -59,7 +63,7 @@ export function buildBreadcrumbs(menus: MenuDTO[], currentPath: string): Breadcr
   let currentMenu = menus.find(m => m.path === relativePath)
 
   while (currentMenu) {
-    breadcrumbs.unshift({ title: currentMenu.title, href: `/dashboard${currentMenu.path}` })
+    breadcrumbs.unshift({ title: currentMenu.title })
     if (currentMenu.parentId) {
       currentMenu = menuMap.get(currentMenu.parentId)
     }
@@ -68,4 +72,12 @@ export function buildBreadcrumbs(menus: MenuDTO[], currentPath: string): Breadcr
     }
   }
   return breadcrumbs
+}
+
+export function sortBySort(a: MenuDTO, b: MenuDTO) {
+  return (a.sort ?? 0) - (b.sort ?? 0)
+}
+
+export function sortById(a: MenuDTO, b: MenuDTO) {
+  return a.id - b.id
 }

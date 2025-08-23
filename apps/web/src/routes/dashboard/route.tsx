@@ -32,7 +32,7 @@ function RouteComponent() {
 
       <Layout>
         <Layout.Header
-          className="flex items-center px-6 b-l b-l-solid b-l-warmGray-200"
+          className="flex items-center px-6"
           style={{ background: colorBgContainer }}
         >
           <div
@@ -44,7 +44,7 @@ function RouteComponent() {
           <Divider type="vertical" className="ml-2 mr-3" />
           <Breadcrumb items={breadcrumbs} />
         </Layout.Header>
-        <Layout.Content className="bg-white">
+        <Layout.Content>
           <Outlet />
         </Layout.Content>
       </Layout>

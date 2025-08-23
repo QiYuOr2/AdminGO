@@ -1,19 +1,55 @@
+import type { TableColumnsType } from 'antd'
+import type { MenuTableVO } from './-hooks/useMenuTableData'
+import type { MenuDTO } from '~/api/menu'
+import { useQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
+import { Table } from 'antd'
+import { fetchMenus } from '~/api/menu'
+import { useMenuTableData } from './-hooks/useMenuTableData'
 
 export const Route = createFileRoute('/dashboard/settings/menu')({
   component: RouteComponent,
 })
 
+const columns: TableColumnsType<MenuTableVO> = [
+  {
+    title: '名称',
+    dataIndex: 'title',
+  },
+  {
+    title: '路由',
+    dataIndex: 'path',
+  },
+  {
+    title: '图标',
+    dataIndex: 'icon',
+  },
+  {
+    title: '排序',
+    dataIndex: 'sort',
+  },
+  {
+    title: '隐藏',
+    dataIndex: 'hidden',
+  },
+  {
+    title: '权限码',
+    dataIndex: 'permissionCode',
+  },
+]
+
 function RouteComponent() {
   // const queryClient = useQueryClient()
 
-  // const { data: menus, isLoading, isError } = useQuery<MenuDTO[]>({
-  //   queryKey: ['settings-menus'],
-  //   queryFn: async () => {
-  //     const response = await fetchMenus()
-  //     return response.data
-  //   },
-  // })
+  const { data: menus, isLoading } = useQuery<MenuDTO[]>({
+    queryKey: ['settings-menus'],
+    queryFn: async () => {
+      const response = await fetchMenus()
+      return response.data
+    },
+  })
+
+  const dataSource = useMenuTableData(menus || [])
 
   // const createMutation = useMutation({
   //   mutationFn: createMenu,
@@ -56,14 +92,14 @@ function RouteComponent() {
   //   },
   // })
 
-  // if (isLoading)
-  //   return <div>Loading menus...</div>
-  // if (isError)
-  //   return <div>Error loading menus.</div>
-
   return (
     <div className="p-4">
-
+      <Table
+        loading={isLoading}
+        dataSource={dataSource}
+        columns={columns}
+        pagination={false}
+      />
     </div>
   )
 }

@@ -8,7 +8,7 @@ interface NavUserProps extends ComponentProps<'div'> {
 
 export function NavUser({ collapsed }: NavUserProps) {
   return (
-    <div className="flex items-center justify-center p-4 gap-2 border-r border-r-solid border-r-warmGray-200">
+    <div className="flex items-center justify-center p-4 gap-2">
       <Avatar shape="square" size="small" />
 
       {!collapsed && (

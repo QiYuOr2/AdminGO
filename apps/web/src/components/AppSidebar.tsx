@@ -74,12 +74,12 @@ export function AppSidebar({ children, ...rest }: ComponentProps<'div'>) {
 
   return (
     <Layout.Sider theme="light" collapsed={collapsed} {...rest}>
-      <div className="flex flex-col h-full">
+      <div className="flex flex-col h-full border-r border-r-solid border-r-warmGray-200">
         <div className="my-2 mx-4 font-bold bg-warmGray-100 py-4 text-center rounded">
           { collapsed ? 'AGO' : 'AdminGO' }
         </div>
         <Menu
-          className="flex-1 overflow-y-auto scrollbar scrollbar-thin scrollbar-track-color-white scrollbar-rounded"
+          className="flex-1 overflow-y-auto scrollbar scrollbar-thin scrollbar-track-color-white scrollbar-rounded !border-e-0"
           mode="inline"
           items={navItems}
           defaultSelectedKeys={selectedMenu ? [String(selectedMenu.id)] : []}

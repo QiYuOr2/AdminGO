@@ -11,6 +11,9 @@ import { presetScrollbar } from 'unocss-preset-scrollbar'
 export default defineConfig({
   shortcuts: [],
   rules: [],
+  safelist: [
+    'i-fluent:border-none-24-filled',
+  ],
   presets: [
     presetAttributify(),
     presetWind3(),
