@@ -15,7 +15,7 @@ import { Route as DashboardRouteRouteImport } from './routes/dashboard/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardSettingsRouteRouteImport } from './routes/dashboard/settings/route'
 import { Route as DashboardSettingsSettingsRouteImport } from './routes/dashboard/settings/settings'
-import { Route as DashboardSettingsMenuRouteImport } from './routes/dashboard/settings/menu'
+import { Route as DashboardSettingsMenuIndexRouteImport } from './routes/dashboard/settings/menu/index'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -48,11 +48,12 @@ const DashboardSettingsSettingsRoute =
     path: '/settings',
     getParentRoute: () => DashboardSettingsRouteRoute,
   } as any)
-const DashboardSettingsMenuRoute = DashboardSettingsMenuRouteImport.update({
-  id: '/menu',
-  path: '/menu',
-  getParentRoute: () => DashboardSettingsRouteRoute,
-} as any)
+const DashboardSettingsMenuIndexRoute =
+  DashboardSettingsMenuIndexRouteImport.update({
+    id: '/menu/',
+    path: '/menu/',
+    getParentRoute: () => DashboardSettingsRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -60,8 +61,8 @@ export interface FileRoutesByFullPath {
   '/404': typeof R404Route
   '/login': typeof LoginRoute
   '/dashboard/settings': typeof DashboardSettingsRouteRouteWithChildren
-  '/dashboard/settings/menu': typeof DashboardSettingsMenuRoute
   '/dashboard/settings/settings': typeof DashboardSettingsSettingsRoute
+  '/dashboard/settings/menu': typeof DashboardSettingsMenuIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -69,8 +70,8 @@ export interface FileRoutesByTo {
   '/404': typeof R404Route
   '/login': typeof LoginRoute
   '/dashboard/settings': typeof DashboardSettingsRouteRouteWithChildren
-  '/dashboard/settings/menu': typeof DashboardSettingsMenuRoute
   '/dashboard/settings/settings': typeof DashboardSettingsSettingsRoute
+  '/dashboard/settings/menu': typeof DashboardSettingsMenuIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -79,8 +80,8 @@ export interface FileRoutesById {
   '/404': typeof R404Route
   '/login': typeof LoginRoute
   '/dashboard/settings': typeof DashboardSettingsRouteRouteWithChildren
-  '/dashboard/settings/menu': typeof DashboardSettingsMenuRoute
   '/dashboard/settings/settings': typeof DashboardSettingsSettingsRoute
+  '/dashboard/settings/menu/': typeof DashboardSettingsMenuIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -90,8 +91,8 @@ export interface FileRouteTypes {
     | '/404'
     | '/login'
     | '/dashboard/settings'
-    | '/dashboard/settings/menu'
     | '/dashboard/settings/settings'
+    | '/dashboard/settings/menu'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -99,8 +100,8 @@ export interface FileRouteTypes {
     | '/404'
     | '/login'
     | '/dashboard/settings'
-    | '/dashboard/settings/menu'
     | '/dashboard/settings/settings'
+    | '/dashboard/settings/menu'
   id:
     | '__root__'
     | '/'
@@ -108,8 +109,8 @@ export interface FileRouteTypes {
     | '/404'
     | '/login'
     | '/dashboard/settings'
-    | '/dashboard/settings/menu'
     | '/dashboard/settings/settings'
+    | '/dashboard/settings/menu/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -163,25 +164,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardSettingsSettingsRouteImport
       parentRoute: typeof DashboardSettingsRouteRoute
     }
-    '/dashboard/settings/menu': {
-      id: '/dashboard/settings/menu'
+    '/dashboard/settings/menu/': {
+      id: '/dashboard/settings/menu/'
       path: '/menu'
       fullPath: '/dashboard/settings/menu'
-      preLoaderRoute: typeof DashboardSettingsMenuRouteImport
+      preLoaderRoute: typeof DashboardSettingsMenuIndexRouteImport
       parentRoute: typeof DashboardSettingsRouteRoute
     }
   }
 }
 
 interface DashboardSettingsRouteRouteChildren {
-  DashboardSettingsMenuRoute: typeof DashboardSettingsMenuRoute
   DashboardSettingsSettingsRoute: typeof DashboardSettingsSettingsRoute
+  DashboardSettingsMenuIndexRoute: typeof DashboardSettingsMenuIndexRoute
 }
 
 const DashboardSettingsRouteRouteChildren: DashboardSettingsRouteRouteChildren =
   {
-    DashboardSettingsMenuRoute: DashboardSettingsMenuRoute,
     DashboardSettingsSettingsRoute: DashboardSettingsSettingsRoute,
+    DashboardSettingsMenuIndexRoute: DashboardSettingsMenuIndexRoute,
   }
 
 const DashboardSettingsRouteRouteWithChildren =

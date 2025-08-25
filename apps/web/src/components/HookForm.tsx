@@ -27,16 +27,16 @@ function HookForm<T extends FieldValues>({ rhf, children, onOk, onFailed, ...res
 interface HookFormItemProps extends ComponentProps<typeof Form.Item> {}
 interface HookFormItemControllerProps extends ComponentProps<typeof Controller> {}
 
-function HookFormItem({ children, ...rest }: HookFormItemProps & HookFormItemControllerProps) {
+function HookFormItem({ children, label, name, rules, render, ...rest }: HookFormItemProps & HookFormItemControllerProps) {
   const { control } = useFormContext()
 
   return (
-    <Form.Item label={rest.label}>
+    <Form.Item label={label} {...rest}>
       <Controller
-        name={rest.name}
+        name={name}
         control={control}
-        rules={rest.rules}
-        render={rest.render}
+        rules={rules}
+        render={render}
       />
     </Form.Item>
   )
