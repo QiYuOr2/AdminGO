@@ -1,6 +1,7 @@
 import type { BreadcrumbItemType } from 'antd/es/breadcrumb/Breadcrumb'
 import type { MenuItemType } from 'antd/es/menu/interface'
 import type { MenuDTO } from '~/api/menu'
+import { DASHBOARD_PATH, DEFAULT_MENU_ICON } from '../constants'
 
 export interface MenuItem extends MenuItemType {
   key: string
@@ -41,7 +42,7 @@ export function buildMenu(basic: string, menus: MenuDTO[], currentPath?: string)
     return {
       key: `${menu.id}`,
       label: menu.title,
-      icon: menu.icon || 'i-fluent:border-none-24-filled',
+      icon: menu.icon || DEFAULT_MENU_ICON,
       children: children?.length ? children : undefined,
       isActive: activeIds.includes(menu.id),
       url: `${basic}${menu.path}`, // 可选，用于点击跳转
@@ -58,7 +59,7 @@ export function buildBreadcrumbs(menus: MenuDTO[], currentPath: string): Breadcr
   const breadcrumbs: BreadcrumbItemType[] = []
   const menuMap = new Map<number, MenuDTO>(menus.map(m => [m.id, m]))
 
-  const relativePath = currentPath.replace('/dashboard', '')
+  const relativePath = currentPath.replace(DASHBOARD_PATH, '')
 
   let currentMenu = menus.find(m => m.path === relativePath)
 

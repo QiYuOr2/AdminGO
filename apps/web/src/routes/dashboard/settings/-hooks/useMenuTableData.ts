@@ -3,14 +3,15 @@ import { useMemo } from 'react'
 import { sortById, sortBySort } from '~/common/utils/menu'
 
 export interface MenuTableVO extends MenuDTO {
-  children?: MenuDTO[]
+  key: string
+  children?: MenuTableVO[]
 }
 
 export function useMenuTableData(menus: MenuDTO[]) {
   return useMemo<MenuTableVO[]>(() => {
     const menuMap = new Map<number, MenuTableVO>()
     menus.forEach((m) => {
-      menuMap.set(m.id, { ...m })
+      menuMap.set(m.id, { ...m, key: m.id.toString() })
     })
 
     const tree: MenuTableVO[] = []

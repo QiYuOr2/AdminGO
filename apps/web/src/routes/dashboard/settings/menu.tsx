@@ -3,8 +3,11 @@ import type { MenuTableVO } from './-hooks/useMenuTableData'
 import type { MenuDTO } from '~/api/menu'
 import { useQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
-import { Table } from 'antd'
+import { message, Table } from 'antd'
 import { fetchMenus } from '~/api/menu'
+import { DEFAULT_MENU_ICON } from '~/common/constants'
+import { cn } from '~/common/utils/cn'
+import { appendActionsMenu } from '../-components/ActionsMenu'
 import { useMenuTableData } from './-hooks/useMenuTableData'
 
 export const Route = createFileRoute('/dashboard/settings/menu')({
@@ -23,6 +26,7 @@ const columns: TableColumnsType<MenuTableVO> = [
   {
     title: '图标',
     dataIndex: 'icon',
+    render: (icon: string) => <div className={cn(icon || DEFAULT_MENU_ICON, 'text-xl h-[1em]')}></div>,
   },
   {
     title: '排序',
@@ -31,6 +35,7 @@ const columns: TableColumnsType<MenuTableVO> = [
   {
     title: '隐藏',
     dataIndex: 'hidden',
+    render: (hidden?: boolean) => (hidden ? '是' : '否'),
   },
   {
     title: '权限码',
@@ -39,6 +44,30 @@ const columns: TableColumnsType<MenuTableVO> = [
 ]
 
 function RouteComponent() {
+  const columnsWithAction = appendActionsMenu(
+    columns,
+    [
+      {
+        key: 'edit',
+        label: '编辑',
+        onActionClick: (data) => {
+          message.info(`编辑${data.title}`)
+        },
+      },
+      {
+        type: 'divider',
+        key: 'divider',
+      },
+      {
+        key: 'delete',
+        label: '删除',
+        onActionClick: (data) => {
+          message.info(`删除${data.title}`)
+        },
+      },
+    ],
+  )
+
   // const queryClient = useQueryClient()
 
   const { data: menus, isLoading } = useQuery<MenuDTO[]>({
@@ -97,7 +126,7 @@ function RouteComponent() {
       <Table
         loading={isLoading}
         dataSource={dataSource}
-        columns={columns}
+        columns={columnsWithAction}
         pagination={false}
       />
     </div>
