@@ -83,7 +83,7 @@ func (h *MenuHandler) UpdateMenu(c *gin.Context) {
 
 	menu := dto.FromDTOToModel(menuDTO)
 	if err := h.service.UpdateMenu(uint(id), &menu); err != nil {
-		h.responder.ErrorWithMessage(c, "Failed to update menu")
+		h.responder.ErrorWithMessage(c, err.Error())
 		return
 	}
 

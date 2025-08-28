@@ -1,11 +1,13 @@
 package service
 
 import (
-	"admingo/internal/modules/menu/model"
-	"admingo/internal/modules/menu/repository"
 	rbacModel "admingo/internal/modules/rbac/model"
 	rbacService "admingo/internal/modules/rbac/service"
+
+	"admingo/internal/modules/menu/model"
+	"admingo/internal/modules/menu/repository"
 	"admingo/pkg/crud"
+	"admingo/pkg/utils"
 	"fmt"
 )
 
@@ -80,19 +82,17 @@ func (s *MenuService) CreateMenu(menu *model.Menu) error {
 	if menu.PermissionCode == "" {
 		return fmt.Errorf("permission code is required")
 	}
-	
-	// 创建权限
+
 	_, err := s.rbac.CreatePermission(menu.PermissionCode, menu.Path)
 	if err != nil {
 		return err
 	}
-	
-	// 将权限绑定到Admin角色
+
 	err = s.rbac.AssignPermissionToRole("Admin", menu.PermissionCode)
 	if err != nil {
 		return err
 	}
-	
+
 	return s.repo.Create(menu)
 }
 
@@ -126,7 +126,9 @@ func (s *MenuService) UpdateMenu(id uint, newMenu *model.Menu) error {
 		}
 	}
 
-	return s.repo.Update(newMenu)
+	utils.MergeNonZero(menu, newMenu)
+
+	return s.repo.Update(menu)
 }
 
 func (s *MenuService) DeleteMenu(id uint) error {

@@ -1,24 +1,21 @@
 import type { MenuDTO } from '~/api/menu'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { Button, Form, Input, InputNumber, message, Modal, Select, Switch } from 'antd'
+import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
-import { createMenu, updateMenu } from '~/api/menu'
+import { createMenu, MenuSubmitSchema, updateMenu } from '~/api/menu'
 import { HookForm } from '~/components/HookForm'
 
 interface MenuFormData {
   title: string
   path: string
   icon?: string
-  parentId?: number
+  parentId?: number | null
   sort?: number
   hidden?: boolean
   externalLink?: boolean
   permissionCode: string
-}
-
-export const FormMode = {
-  Create: 'create',
-  Edit: 'edit',
 }
 
 interface MenuFormProps {
@@ -27,6 +24,21 @@ interface MenuFormProps {
   initialData?: MenuDTO
   mode: string
   parentOptions: { value: number, label: string }[]
+}
+
+export const FormMode = {
+  Create: 'create',
+  Edit: 'edit',
+}
+
+const defaultInitialData = {
+  title: '',
+  path: '',
+  icon: '',
+  sort: 0,
+  hidden: false,
+  externalLink: false,
+  permissionCode: '',
 }
 
 export function MenuForm({
@@ -38,17 +50,14 @@ export function MenuForm({
 }: MenuFormProps) {
   const queryClient = useQueryClient()
   const form = useForm<MenuFormData>({
-    defaultValues: initialData || {
-      title: '',
-      path: '',
-      icon: '',
-      sort: 0,
-      hidden: false,
-      externalLink: false,
-      permissionCode: '',
-    },
+    resolver: zodResolver(MenuSubmitSchema),
+    defaultValues: initialData || defaultInitialData,
     mode: 'onChange',
   })
+
+  useEffect(() => {
+    form.reset(initialData || defaultInitialData)
+  }, [initialData])
 
   const createMutation = useMutation({
     mutationFn: createMenu,
@@ -76,19 +85,6 @@ export function MenuForm({
   })
 
   const handleSubmit = (data: MenuFormData) => {
-    if (!data.title?.trim()) {
-      message.error('请输入菜单名称')
-      return
-    }
-    if (!data.path?.trim()) {
-      message.error('请输入路由路径')
-      return
-    }
-    if (!data.permissionCode?.trim()) {
-      message.error('请输入权限码')
-      return
-    }
-
     if (mode === FormMode.Create) {
       createMutation.mutate(data as MenuDTO)
     }
@@ -115,6 +111,7 @@ export function MenuForm({
         rhf={form}
         onOk={handleSubmit}
         labelCol={{ span: 4 }}
+        layout="vertical"
       >
         <HookForm.Item
           name="title"
@@ -190,14 +187,6 @@ export function MenuForm({
         <HookForm.Item
           name="hidden"
           label="隐藏菜单"
-          render={({ field }) => (
-            <Switch {...field} checked={field.value} />
-          )}
-        />
-
-        <HookForm.Item
-          name="externalLink"
-          label="外链"
           render={({ field }) => (
             <Switch {...field} checked={field.value} />
           )}
