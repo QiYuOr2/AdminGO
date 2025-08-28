@@ -10,29 +10,23 @@ import (
 	"gorm.io/gorm"
 )
 
-// --- Mocks ---
-
 type MockRBACService struct {
 	permissions []string
 	err         error
 }
 
-// AssignPermissionToRole implements service.RBACServiceInterface.
 func (m *MockRBACService) AssignPermissionToRole(roleName string, permissionCode string) error {
 	panic("unimplemented")
 }
 
-// CreatePermission implements service.RBACServiceInterface.
 func (m *MockRBACService) CreatePermission(code string, path string) (*rbacmodel.Permission, error) {
 	panic("unimplemented")
 }
 
-// DeletePermission implements service.RBACServiceInterface.
 func (m *MockRBACService) DeletePermission(code string) error {
 	panic("unimplemented")
 }
 
-// UpdatePermission implements service.RBACServiceInterface.
 func (m *MockRBACService) UpdatePermission(code string, newPerm *rbacmodel.Permission) error {
 	panic("unimplemented")
 }

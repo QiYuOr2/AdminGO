@@ -30,7 +30,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <AppProvider>
-        <ConfigProvider>
+        <ConfigProvider theme={{ cssVar: true }}>
           <RouterProvider router={router} context={{ auth }} />
         </ConfigProvider>
       </AppProvider>

@@ -6,8 +6,9 @@ import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { createMenu, MenuSubmitSchema, updateMenu } from '~/api/menu'
 import { HookForm } from '~/components/HookForm'
+import { IconSelector } from './IconSelector'
 
-interface MenuFormData {
+interface MenuEditorData {
   title: string
   path: string
   icon?: string
@@ -18,7 +19,7 @@ interface MenuFormData {
   permissionCode: string
 }
 
-interface MenuFormProps {
+interface MenuEditorProps {
   open: boolean
   onClose: () => void
   initialData?: MenuDTO
@@ -41,15 +42,15 @@ const defaultInitialData = {
   permissionCode: '',
 }
 
-export function MenuForm({
+export function MenuEditor({
   open,
   onClose,
   initialData,
   mode,
   parentOptions,
-}: MenuFormProps) {
+}: MenuEditorProps) {
   const queryClient = useQueryClient()
-  const form = useForm<MenuFormData>({
+  const form = useForm<MenuEditorData>({
     resolver: zodResolver(MenuSubmitSchema),
     defaultValues: initialData || defaultInitialData,
     mode: 'onChange',
@@ -73,7 +74,7 @@ export function MenuForm({
   })
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, data }: { id: number, data: MenuFormData }) => updateMenu(id, data as MenuDTO),
+    mutationFn: ({ id, data }: { id: number, data: MenuEditorData }) => updateMenu(id, data as MenuDTO),
     onSuccess: () => {
       message.success('菜单更新成功')
       queryClient.invalidateQueries({ queryKey: ['settings-menus'] })
@@ -84,7 +85,7 @@ export function MenuForm({
     },
   })
 
-  const handleSubmit = (data: MenuFormData) => {
+  const handleSubmit = (data: MenuEditorData) => {
     if (mode === FormMode.Create) {
       createMutation.mutate(data as MenuDTO)
     }
@@ -145,7 +146,7 @@ export function MenuForm({
           name="icon"
           label="图标"
           render={({ field }) => (
-            <Input {...field} placeholder="请输入图标类名" />
+            <IconSelector {...field} placeholder="请选择菜单图标" />
           )}
         />
 

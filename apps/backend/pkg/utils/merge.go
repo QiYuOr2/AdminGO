@@ -37,7 +37,6 @@ func MergeNonNil[T any](oldStruct, newStruct *T) {
 			continue
 		}
 
-		// 只更新非 nil 的字段（指针）
 		if newField.Kind() == reflect.Ptr && !newField.IsNil() {
 			oldField.Set(newField.Elem())
 		}

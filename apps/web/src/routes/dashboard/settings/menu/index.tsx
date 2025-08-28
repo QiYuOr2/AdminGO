@@ -9,7 +9,7 @@ import { deleteMenu, fetchMenus } from '~/api/menu'
 import { DEFAULT_MENU_ICON } from '~/common/constants'
 import { cn } from '~/common/utils/cn'
 import { appendActionsMenu } from '../../-components/ActionsMenu'
-import { FormMode, MenuForm } from './-components/MenuEditor'
+import { FormMode, MenuEditor } from './-components/MenuEditor'
 import { useMenuTableData } from './-hooks/useMenuTableData'
 
 export const Route = createFileRoute('/dashboard/settings/menu/')({
@@ -141,7 +141,7 @@ function RouteComponent() {
         pagination={false}
       />
 
-      <MenuForm
+      <MenuEditor
         open={modalOpen}
         onClose={handleModalClose}
         initialData={editingMenu || undefined}

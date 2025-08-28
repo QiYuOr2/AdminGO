@@ -4,14 +4,14 @@ import { apiClient } from '../common/apiClient'
 export const MenuSchema = z.object({
   id: z.number(),
   parentId: z.number().optional().nullable(),
-  title: z.string(),
-  path: z.string(),
+  title: z.string().min(1, '菜单名称不能为空'),
+  path: z.string().min(1, '路由路径不能为空'),
   icon: z.string().optional(),
   hidden: z.boolean().optional(),
   keepAlive: z.boolean().optional(),
   externalLink: z.boolean().optional(),
   sort: z.number().optional(),
-  permissionCode: z.string(),
+  permissionCode: z.string().min(1, '权限码不能为空'),
 })
 
 export type MenuDTO = z.infer<typeof MenuSchema>
