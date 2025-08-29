@@ -10,7 +10,7 @@ type Repository[T any] interface {
 	GetByID(id uint) (*T, error)
 	Update(entity *T) error
 	Delete(id uint) error
-	List(offset, limit int) ([]*T, error)
+	List(offset, limit int) ([]T, error)
 }
 
 type repository[T any] struct {
@@ -46,8 +46,8 @@ func (r *repository[T]) Delete(id uint) error {
 	return r.db.Delete(&entity, id).Error
 }
 
-func (r *repository[T]) List(offset, limit int) ([]*T, error) {
-	var entities []*T
+func (r *repository[T]) List(offset, limit int) ([]T, error) {
+	var entities []T
 	if err := r.db.Offset(offset).Limit(limit).Find(&entities).Error; err != nil {
 		return nil, err
 	}

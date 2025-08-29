@@ -73,7 +73,7 @@ func (m *MockMenuRepository) Update(entity *model.Menu) error {
 func (m *MockMenuRepository) Delete(id uint) error {
 	return nil
 }
-func (m *MockMenuRepository) List(offset, limit int) ([]*model.Menu, error) {
+func (m *MockMenuRepository) List(offset, limit int) ([]model.Menu, error) {
 	return nil, nil
 }
 func (m *MockMenuRepository) FindByPermissionCodes(permissionCodes []string) ([]model.Menu, error) {

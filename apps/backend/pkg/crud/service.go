@@ -24,6 +24,6 @@ func (s *Service[T]) Delete(id uint) error {
 	return s.Repo.Delete(id)
 }
 
-func (s *Service[T]) List(offset, limit int) ([]*T, error) {
+func (s *Service[T]) List(offset, limit int) ([]T, error) {
 	return s.Repo.List(offset, limit)
 }

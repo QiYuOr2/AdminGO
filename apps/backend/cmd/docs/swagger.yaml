@@ -14,6 +14,54 @@ definitions:
     properties:
       token:
         type: string
+      userId:
+        type: integer
+      username:
+        type: string
+    type: object
+  admingo_internal_modules_menu_dto.MenuDTO:
+    properties:
+      externalLink:
+        type: boolean
+      hidden:
+        type: boolean
+      icon:
+        type: string
+      id:
+        type: integer
+      keepAlive:
+        type: boolean
+      parentId:
+        type: integer
+      path:
+        type: string
+      permissionCode:
+        type: string
+      sort:
+        type: integer
+      title:
+        type: string
+    required:
+    - path
+    - title
+    type: object
+  admingo_internal_modules_rbac_dto.PermissionDTO:
+    properties:
+      code:
+        type: string
+      path:
+        type: string
+    type: object
+  admingo_internal_modules_rbac_dto.RoleDTO:
+    properties:
+      name:
+        type: string
+      permissions:
+        items:
+          $ref: '#/definitions/admingo_internal_modules_rbac_dto.PermissionDTO'
+        type: array
+    required:
+    - name
     type: object
   admingo_internal_pkg_response.Response-admingo_internal_modules_auth_dto_LoginResponseDTO:
     properties:
@@ -21,6 +69,28 @@ definitions:
         type: integer
       data:
         $ref: '#/definitions/admingo_internal_modules_auth_dto.LoginResponseDTO'
+      message:
+        type: string
+    type: object
+  admingo_internal_pkg_response.Response-array_admingo_internal_modules_menu_dto_MenuDTO:
+    properties:
+      code:
+        type: integer
+      data:
+        items:
+          $ref: '#/definitions/admingo_internal_modules_menu_dto.MenuDTO'
+        type: array
+      message:
+        type: string
+    type: object
+  admingo_internal_pkg_response.Response-array_admingo_internal_modules_rbac_dto_RoleDTO:
+    properties:
+      code:
+        type: integer
+      data:
+        items:
+          $ref: '#/definitions/admingo_internal_modules_rbac_dto.RoleDTO'
+        type: array
       message:
         type: string
     type: object
@@ -75,4 +145,51 @@ paths:
       summary: 注册
       tags:
       - auth
+  /api/sys/menu/findByUser:
+    get:
+      consumes:
+      - application/json
+      description: 根据用户ID获取菜单列表
+      parameters:
+      - description: User ID
+        in: path
+        name: userID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/admingo_internal_pkg_response.Response-array_admingo_internal_modules_menu_dto_MenuDTO'
+      security:
+      - ApiKeyAuth: []
+      summary: 根据用户ID获取菜单
+      tags:
+      - menu
+  /api/sys/menu/roles:
+    get:
+      consumes:
+      - application/json
+      description: 分页获取角色及其权限
+      parameters:
+      - description: 页码 (默认 1)
+        in: query
+        name: page
+        type: integer
+      - description: 每页数量 (默认 10)
+        in: query
+        name: size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功返回角色列表
+          schema:
+            $ref: '#/definitions/admingo_internal_pkg_response.Response-array_admingo_internal_modules_rbac_dto_RoleDTO'
+      summary: 获取角色列表（包含权限）
+      tags:
+      - 角色管理
 swagger: "2.0"

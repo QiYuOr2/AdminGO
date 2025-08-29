@@ -24,7 +24,7 @@ func (s *RoleService) CRUD() *crud.Service[model.Role] {
 	return s.Service
 }
 
-func (s *RoleService) FindRoleAndPermissions(offset, limit int) ([]*model.Role, error) {
+func (s *RoleService) FindRoleAndPermissions(offset, limit int) ([]model.Role, error) {
 	roles, err := s.repo.List(offset, limit)
 	if err != nil {
 		return nil, err
