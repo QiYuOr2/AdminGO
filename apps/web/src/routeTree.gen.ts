@@ -15,6 +15,7 @@ import { Route as DashboardRouteRouteImport } from './routes/dashboard/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardSettingsRouteRouteImport } from './routes/dashboard/settings/route'
 import { Route as DashboardSettingsSettingsRouteImport } from './routes/dashboard/settings/settings'
+import { Route as DashboardSettingsRoleIndexRouteImport } from './routes/dashboard/settings/role/index'
 import { Route as DashboardSettingsMenuIndexRouteImport } from './routes/dashboard/settings/menu/index'
 
 const LoginRoute = LoginRouteImport.update({
@@ -48,6 +49,12 @@ const DashboardSettingsSettingsRoute =
     path: '/settings',
     getParentRoute: () => DashboardSettingsRouteRoute,
   } as any)
+const DashboardSettingsRoleIndexRoute =
+  DashboardSettingsRoleIndexRouteImport.update({
+    id: '/role/',
+    path: '/role/',
+    getParentRoute: () => DashboardSettingsRouteRoute,
+  } as any)
 const DashboardSettingsMenuIndexRoute =
   DashboardSettingsMenuIndexRouteImport.update({
     id: '/menu/',
@@ -63,6 +70,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/settings': typeof DashboardSettingsRouteRouteWithChildren
   '/dashboard/settings/settings': typeof DashboardSettingsSettingsRoute
   '/dashboard/settings/menu': typeof DashboardSettingsMenuIndexRoute
+  '/dashboard/settings/role': typeof DashboardSettingsRoleIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -72,6 +80,7 @@ export interface FileRoutesByTo {
   '/dashboard/settings': typeof DashboardSettingsRouteRouteWithChildren
   '/dashboard/settings/settings': typeof DashboardSettingsSettingsRoute
   '/dashboard/settings/menu': typeof DashboardSettingsMenuIndexRoute
+  '/dashboard/settings/role': typeof DashboardSettingsRoleIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -82,6 +91,7 @@ export interface FileRoutesById {
   '/dashboard/settings': typeof DashboardSettingsRouteRouteWithChildren
   '/dashboard/settings/settings': typeof DashboardSettingsSettingsRoute
   '/dashboard/settings/menu/': typeof DashboardSettingsMenuIndexRoute
+  '/dashboard/settings/role/': typeof DashboardSettingsRoleIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -93,6 +103,7 @@ export interface FileRouteTypes {
     | '/dashboard/settings'
     | '/dashboard/settings/settings'
     | '/dashboard/settings/menu'
+    | '/dashboard/settings/role'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -102,6 +113,7 @@ export interface FileRouteTypes {
     | '/dashboard/settings'
     | '/dashboard/settings/settings'
     | '/dashboard/settings/menu'
+    | '/dashboard/settings/role'
   id:
     | '__root__'
     | '/'
@@ -111,6 +123,7 @@ export interface FileRouteTypes {
     | '/dashboard/settings'
     | '/dashboard/settings/settings'
     | '/dashboard/settings/menu/'
+    | '/dashboard/settings/role/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -164,6 +177,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardSettingsSettingsRouteImport
       parentRoute: typeof DashboardSettingsRouteRoute
     }
+    '/dashboard/settings/role/': {
+      id: '/dashboard/settings/role/'
+      path: '/role'
+      fullPath: '/dashboard/settings/role'
+      preLoaderRoute: typeof DashboardSettingsRoleIndexRouteImport
+      parentRoute: typeof DashboardSettingsRouteRoute
+    }
     '/dashboard/settings/menu/': {
       id: '/dashboard/settings/menu/'
       path: '/menu'
@@ -177,12 +197,14 @@ declare module '@tanstack/react-router' {
 interface DashboardSettingsRouteRouteChildren {
   DashboardSettingsSettingsRoute: typeof DashboardSettingsSettingsRoute
   DashboardSettingsMenuIndexRoute: typeof DashboardSettingsMenuIndexRoute
+  DashboardSettingsRoleIndexRoute: typeof DashboardSettingsRoleIndexRoute
 }
 
 const DashboardSettingsRouteRouteChildren: DashboardSettingsRouteRouteChildren =
   {
     DashboardSettingsSettingsRoute: DashboardSettingsSettingsRoute,
     DashboardSettingsMenuIndexRoute: DashboardSettingsMenuIndexRoute,
+    DashboardSettingsRoleIndexRoute: DashboardSettingsRoleIndexRoute,
   }
 
 const DashboardSettingsRouteRouteWithChildren =

@@ -45,13 +45,10 @@ func main() {
 	menu.AutoMigrate(db)
 	menu.Init(db)
 
-	// Create services
 	jwt := jwt.New([]byte(config.Conf.JWT.Secret))
 
-	// Create service container
 	container := container.New(db, jwt)
 
-	// Build handlers and setup router
 	hc := api.BuildHandlers(container)
 	r := api.SetupRouter(hc, container)
 

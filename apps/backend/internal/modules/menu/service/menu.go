@@ -126,7 +126,7 @@ func (s *MenuService) UpdateMenu(id uint, newMenu *model.Menu) error {
 		}
 	}
 
-	utils.MergeNonZero(menu, newMenu)
+	utils.MergeNonZero(menu, newMenu, "Sort")
 
 	return s.repo.Update(menu)
 }

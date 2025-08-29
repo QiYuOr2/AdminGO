@@ -1,6 +1,7 @@
 package crud
 
 import (
+	"admingo/pkg/utils"
 	"net/http"
 	"strconv"
 
@@ -95,23 +96,10 @@ func (h *Handler[T]) Delete(c *gin.Context) {
 }
 
 func (h *Handler[T]) List(c *gin.Context) {
-	pageStr := c.DefaultQuery("page", "1")
-	pageSizeStr := c.DefaultQuery("pageSize", "10")
+	page, size := utils.GetPagination(c)
 
-	page, err := strconv.Atoi(pageStr)
-	if err != nil || page < 1 {
-		h.Responder.CRUDError(c, http.StatusBadRequest, "Invalid page parameter")
-		return
-	}
-
-	pageSize, err := strconv.Atoi(pageSizeStr)
-	if err != nil || pageSize < 1 {
-		h.Responder.CRUDError(c, http.StatusBadRequest, "Invalid pageSize parameter")
-		return
-	}
-
-	offset := (page - 1) * pageSize
-	limit := pageSize
+	offset := (page - 1) * size
+	limit := size
 
 	entities, err := h.Service.List(offset, limit)
 	if err != nil {

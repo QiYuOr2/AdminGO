@@ -7,6 +7,12 @@ import (
 	"gorm.io/gorm"
 )
 
+type RoleRepositoryInterface interface {
+	crud.Repository[model.Role]
+	GetRolePermissions(roleID uint) ([]model.Permission, error)
+	AssignPermissionToRole(roleName string, permissionCode string) error
+}
+
 type RoleRepository struct {
 	crud.Repository[model.Role]
 }

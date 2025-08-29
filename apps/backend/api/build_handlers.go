@@ -6,8 +6,10 @@ import (
 	"admingo/internal/modules/auth"
 	"admingo/internal/modules/menu"
 
+	RBACHandler "admingo/internal/modules/rbac/handler"
 	RBACRepo "admingo/internal/modules/rbac/repository"
 	RBACService "admingo/internal/modules/rbac/service"
+
 	"admingo/internal/pkg/response"
 	"admingo/pkg/crud"
 )
@@ -15,7 +17,7 @@ import (
 type HandlerCenter struct {
 	Auth       *auth.Handler
 	User       *sys.UserHandler
-	Role       *sys.RoleHandler
+	Role       *RBACHandler.RoleHandler
 	Permission *sys.PermissionHandler
 	Menu       *menu.Handler
 }
@@ -33,14 +35,14 @@ func BuildHandlers(container *container.ServiceContainer) *HandlerCenter {
 	rbacService := RBACService.NewRBACService(userRepo, roleRepo, permissionRepo)
 	authService := auth.NewService(rbacService, container.JWT)
 	userService := crud.NewService(userRepo)
-	roleService := crud.NewService(roleRepo)
+	roleService := RBACService.NewRoleService(roleRepo, rbacService)
 	permissionService := crud.NewService(permissionRepo)
 	menuService := menu.NewMenuService(menuRepo, rbacService)
 
 	// Handlers
 	authHandler := auth.NewHandler(authService, responder)
 	userHandler := crud.NewHandler(userService, responder)
-	roleHandler := crud.NewHandler(roleService, responder)
+	roleHandler := RBACHandler.NewRoleHandler(roleService, responder)
 	permissionHandler := crud.NewHandler(permissionService, responder)
 	menuHandler := menu.NewMenuHandler(menuService, responder)
 

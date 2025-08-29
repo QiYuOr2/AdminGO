@@ -4,10 +4,15 @@ import (
 	"reflect"
 )
 
-func MergeNonZero[T any](oldStruct, newStruct *T) {
+func MergeNonZero[T any](oldStruct, newStruct *T, excludeKeys ...string) {
 	oldVal := reflect.ValueOf(oldStruct).Elem()
 	newVal := reflect.ValueOf(newStruct).Elem()
 	typ := oldVal.Type()
+
+	excludeMap := make(map[string]struct{}, len(excludeKeys))
+	for _, key := range excludeKeys {
+		excludeMap[key] = struct{}{}
+	}
 
 	for i := 0; i < typ.NumField(); i++ {
 		oldField := oldVal.Field(i)
@@ -17,8 +22,9 @@ func MergeNonZero[T any](oldStruct, newStruct *T) {
 			continue
 		}
 
+		_, excluded := excludeMap[typ.Field(i).Name]
 		zero := reflect.Zero(newField.Type()).Interface()
-		if !reflect.DeepEqual(newField.Interface(), zero) {
+		if excluded || !reflect.DeepEqual(newField.Interface(), zero) {
 			oldField.Set(newField)
 		}
 	}

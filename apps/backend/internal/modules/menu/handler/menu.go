@@ -25,15 +25,15 @@ func New(service *service.MenuService, responder *response.Responder) *MenuHandl
 	}
 }
 
-// @Summary		根据用户ID获取菜单
-// @Description	根据用户ID获取菜单列表
-// @Tags			menu
-// @Accept			json
-// @Produce		json
-// @Security		ApiKeyAuth
-// @Param			userID	path	int	true	"User ID"
-// @Success		200		{object}	response.Response[[]dto.MenuDTO]
-// @Router			/api/sys/menu/findByUser [get]
+//	@Summary		根据用户ID获取菜单
+//	@Description	根据用户ID获取菜单列表
+//	@Tags			menu
+//	@Accept			json
+//	@Produce		json
+//	@Security		ApiKeyAuth
+//	@Param			userID	path		int	true	"User ID"
+//	@Success		200		{object}	response.Response[[]dto.MenuDTO]
+//	@Router			/api/sys/menu/findByUser [get]
 func (h *MenuHandler) FindByUserID(c *gin.Context) {
 	userID, exists := c.Get("userId")
 	if !exists {
