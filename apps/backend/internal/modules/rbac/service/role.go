@@ -1,6 +1,7 @@
 package service
 
 import (
+	"admingo/internal/modules/rbac/dto"
 	"admingo/internal/modules/rbac/model"
 	"admingo/internal/modules/rbac/repository"
 	"admingo/pkg/crud"
@@ -24,8 +25,12 @@ func (s *RoleService) CRUD() *crud.Service[model.Role] {
 	return s.Service
 }
 
-func (s *RoleService) FindRoleAndPermissions(offset, limit int) ([]model.Role, error) {
+func (s *RoleService) FindRoleAndPermissions(offset, limit int) (*dto.RoleListDTO, error) {
 	roles, err := s.repo.List(offset, limit)
+	if err != nil {
+		return nil, err
+	}
+	total, err := s.repo.Count()
 	if err != nil {
 		return nil, err
 	}
@@ -38,5 +43,7 @@ func (s *RoleService) FindRoleAndPermissions(offset, limit int) ([]model.Role, e
 		roles[i].Permissions = perms
 	}
 
-	return roles, nil
+	dtos := dto.FormModelListToRoleDTOList(roles)
+
+	return &dto.RoleListDTO{List: dtos, Total: total}, nil
 }

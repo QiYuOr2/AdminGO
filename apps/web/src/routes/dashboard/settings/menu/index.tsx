@@ -8,7 +8,7 @@ import { useState } from 'react'
 import { deleteMenu, fetchMenus } from '~/api/menu'
 import { DEFAULT_MENU_ICON } from '~/common/constants'
 import { cn } from '~/common/utils/cn'
-import { appendActionsMenu } from '../../-components/ActionsMenu'
+import { appendActionsMenu } from '../../../../components/ActionsMenu'
 import { FormMode, MenuEditor } from './-components/MenuEditor'
 import { useMenuTableData } from './-hooks/useMenuTableData'
 

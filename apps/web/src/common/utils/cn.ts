@@ -1,7 +1,7 @@
-import { unique } from './array'
+import { uniq } from 'es-toolkit'
 
 function toClassList(className?: string): string[] {
-  return unique(
+  return uniq(
     (className || '')
       .split(' ')
       .map(c => c.trim())

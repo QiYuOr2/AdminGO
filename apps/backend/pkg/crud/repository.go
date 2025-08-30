@@ -11,6 +11,7 @@ type Repository[T any] interface {
 	Update(entity *T) error
 	Delete(id uint) error
 	List(offset, limit int) ([]T, error)
+	Count() (int64, error)
 }
 
 type repository[T any] struct {
@@ -52,4 +53,13 @@ func (r *repository[T]) List(offset, limit int) ([]T, error) {
 		return nil, err
 	}
 	return entities, nil
+}
+
+func (r *repository[T]) Count() (int64, error) {
+	var count int64
+	var entity T
+	if err := r.db.Model(&entity).Count(&count).Error; err != nil {
+		return 0, err
+	}
+	return count, nil
 }

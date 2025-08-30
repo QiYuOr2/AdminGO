@@ -20,6 +20,7 @@
     "@tanstack/react-table": "catalog:",
     "@unocss/reset": "catalog:styles",
     "antd": "catalog:styles",
+    "es-toolkit": "catalog:utils",
     "i18next": "catalog:utils",
     "i18next-http-backend": "catalog:utils",
     "next-themes": "catalog:styles",

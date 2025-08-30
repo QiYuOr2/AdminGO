@@ -76,6 +76,12 @@ func (m *MockMenuRepository) Delete(id uint) error {
 func (m *MockMenuRepository) List(offset, limit int) ([]model.Menu, error) {
 	return nil, nil
 }
+func (m *MockMenuRepository) Count() (int64, error) {
+	if m.err != nil {
+		return 0, m.err
+	}
+	return int64(len(m.menus)), nil
+}
 func (m *MockMenuRepository) FindByPermissionCodes(permissionCodes []string) ([]model.Menu, error) {
 	if m.err != nil {
 		return nil, m.err

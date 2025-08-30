@@ -1,6 +1,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { createRouter, Navigate, RouterProvider } from '@tanstack/react-router'
 import { ConfigProvider } from 'antd'
+import zhCN from 'antd/locale/zh_CN'
 import { useEffect } from 'react'
 import ReactDOM from 'react-dom/client'
 import { auth } from './common/auth'
@@ -30,7 +31,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <AppProvider>
-        <ConfigProvider theme={{ cssVar: true }}>
+        <ConfigProvider theme={{ cssVar: true }} locale={zhCN}>
           <RouterProvider router={router} context={{ auth }} />
         </ConfigProvider>
       </AppProvider>

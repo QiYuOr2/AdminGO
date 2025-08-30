@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"admingo/internal/modules/rbac/dto"
 	"admingo/internal/modules/rbac/model"
 	"admingo/internal/modules/rbac/service"
 	"admingo/internal/pkg/response"
@@ -32,7 +31,7 @@ func NewRoleHandler(service *service.RoleService, responder *response.Responder)
 // @Produce		json
 // @Param			page	query		int										false	"页码 (默认 1)"
 // @Param			size	query		int										false	"每页数量 (默认 10)"
-// @Success		200		{object}	response.Response[[]dto.RoleDTO]	"成功返回角色列表"
+// @Success		200		{object}	response.Response[dto.RoleListDTO]	"成功返回角色列表"
 // @Router			/api/sys/menu/roles [get]
 func (h *RoleHandler) List(c *gin.Context) {
 	page, size := utils.GetPagination(c)
@@ -45,7 +44,5 @@ func (h *RoleHandler) List(c *gin.Context) {
 		return
 	}
 
-	dtos := dto.FormModelListToRoleDTOList(roles)
-
-	h.responder.Success(c, dtos)
+	h.responder.Success(c, roles)
 }
