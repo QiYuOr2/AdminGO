@@ -3,9 +3,9 @@ import type { RoleDTO, RoleListDTO } from '~/api/role'
 import { useQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 import { Button, Table } from 'antd'
+import { useState } from 'react'
 import { fetchRoles } from '~/api/role'
 import { appendActionsMenu } from '~/components/ActionsMenu'
-import { usePagination } from '~/hooks/usePagination'
 
 export const Route = createFileRoute('/dashboard/settings/role/')({
   component: RouteComponent,
@@ -19,10 +19,18 @@ const columns: TableColumnsType<RoleDTO> = [
 ]
 
 function RouteComponent() {
+  const [page, setPage] = useState(0)
+  const [size, setSize] = useState(10)
+
+  const onPaginationChange = (current: number, pageSize: number) => {
+    setPage(current)
+    setSize(pageSize)
+  }
+
   const { data: roles, isLoading } = useQuery<RoleListDTO>({
-    queryKey: ['settings-roles'],
+    queryKey: ['settings-roles', page, size],
     queryFn: async () => {
-      const response = await fetchRoles()
+      const response = await fetchRoles(page, size)
       return response.data
     },
   })
@@ -46,8 +54,6 @@ function RouteComponent() {
     ],
   )
 
-  const { pagination } = usePagination()
-
   return (
     <div className="p-4">
       <div className="mb-4 p-4 bg-white rounded-lg">
@@ -56,8 +62,9 @@ function RouteComponent() {
       <Table
         loading={isLoading}
         pagination={{
-          current: pagination.page,
-          pageSize: pagination.size,
+          current: page,
+          pageSize: size,
+          onChange: onPaginationChange,
           showSizeChanger: true,
           showTotal: () => `共计 ${roles?.total || 0} 条`,
           pageSizeOptions: ['10', '20', '50', '100'],
